@@ -1,0 +1,8 @@
+BAC-Explorer result
+Sequence: TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC
+Name: J23100
+Topology: constitutive
+R-index total: 1.0
+Positive regimes: 3
+Cone rays: 6
+Interpretation: Robust design. Most of parameter space produces the desired behavior.

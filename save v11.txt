@@ -1,0 +1,691 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Users\Computer Arena> julia +1.12
+               _
+   _       _ _(_)_     |  Documentation: https://docs.julialang.org
+  (_)     | (_) (_)    |
+   _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
+  | | | | | | |/ _` |  |
+  | | |_| | | | (_| |  |  Version 1.12.7 (2026-08-15)
+ _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org release
+|__/                   |
+
+julia> using Pkg
+
+julia> Pkg.activate("C:\\BindingAndCatalysis.jl")
+  Activating project at `C:\BindingAndCatalysis.jl`
+
+julia> using BindingAndCatalysis
+
+julia> using LinearAlgebra, SparseArrays
+
+julia> Base.muladd(a::Real, b::BindingAndCatalysis.ExactLogExpr, c::BindingAndCatalysis.ExactLogExpr) = (a * b) + c
+
+julia> using Bonito
+
+julia>
+
+julia> app = App() do
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+           btn = Bonito.Button("Compute R-index")
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+           btn = Bonito.Button("Compute R-index")
+           result = Bonito.Observable("Enter N and L, then click.")
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+           btn = Bonito.Button("Compute R-index")
+           result = Bonito.Observable("Enter N and L, then click.")
+           on(btn) do _
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+           btn = Bonito.Button("Compute R-index")
+           result = Bonito.Observable("Enter N and L, then click.")
+           on(btn) do _
+               try
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+           btn = Bonito.Button("Compute R-index")
+           result = Bonito.Observable("Enter N and L, then click.")
+           on(btn) do _
+               try
+                   n_rows = split(strip(n_field.value[]), ';')
+                               l_rows = split(strip(l_field.value[]), ';')
+                   N_matrix = reduce(vcat, [reshape(parse.(Int, split(strip(r))), 1, :) for r in n_rows])
+                   L_matrix = reduce(vcat, [reshape(parse.(Int, split(strip(r))), 1, :) for r in l_rows])
+                   n_species = size(N_matrix, 2)
+                   x_sym = [Symbol("x$i") for i in 1:n_species]
+                   q_sym = [Symbol("t$i") for i in 1:size(L_matrix, 1)]
+                   K_sym = [Symbol("K$i") for i in 1:size(N_matrix, 1)]
+                   model = Bnc(N=N_matrix, L=L_matrix, x_sym=x_sym, q_sym=q_sym, K_sym=K_sym)
+                   volumes = get_volumes(model; reltol=0.01, time_limit=15.0)
+                               r_total = sum(v.mean for v in volumes)
+                   n_pos = count(v -> v.mean > 0, volumes)
+                   detail = join([string(round(v.mean, digits=4)) for v in volumes], ", ")
+                   result[] = "Total R-index: " * string(round(r_total, digits=4)) *
+                              "\nPositive regimes: " * string(n_pos) *
+                              "\nVolumes: " * detail
+               catch e
+                   result[] = "Error: " * string(e)
+                           end
+           end
+           DOM.div(
+               DOM.h1("BAC-Explorer v9"),
+               DOM.p("N matrix:"), n_field,
+               DOM.p("L matrix:"), l_field,
+               btn,
+               DOM.hr(),
+               DOM.h2("Result"),
+               DOM.pre(result),
+           )
+       end
+
+julia>
+
+julia> server = Bonito.Server(app, "127.0.0.1", 8110)
+Server:
+  isrunning: true
+  listen_url: http://localhost:8110
+  online_url: http://localhost:8110
+  http routes: 1
+    / => App
+  websocket routes: 0
+
+
+julia>
+
+julia> app = App() do
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+           btn = Bonito.Button("Compute R-index")
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+           btn = Bonito.Button("Compute R-index")
+           result = Bonito.Observable("Enter N and L, then click.")
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+           btn = Bonito.Button("Compute R-index")
+           result = Bonito.Observable("Enter N and L, then click.")
+           on(btn) do _
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+           btn = Bonito.Button("Compute R-index")
+           result = Bonito.Observable("Enter N and L, then click.")
+           on(btn) do _
+               try
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1")
+           btn = Bonito.Button("Compute R-index")
+           result = Bonito.Observable("Enter N and L, then click.")
+           on(btn) do _
+               try
+                   n_rows = split(strip(n_field.value[]), ';')
+                   l_rows = split(strip(l_field.value[]), ';')
+                   N_matrix = reduce(vcat, [reshape(parse.(Int, split(strip(r))), 1, :) for r in n_rows])
+                   L_matrix = reduce(vcat, [reshape(parse.(Int, split(strip(r))), 1, :) for r in l_rows])
+                   n_species = size(N_matrix, 2)
+                   x_sym = [Symbol("x$i") for i in 1:n_species]
+                   q_sym = [Symbol("t$i") for i in 1:size(L_matrix, 1)]
+                   K_sym = [Symbol("K$i") for i in 1:size(N_matrix, 1)]
+                   model = Bnc(N=N_matrix, L=L_matrix, x_sym=x_sym, q_sym=q_sym, K_sym=K_sym)
+                   volumes = get_volumes(model; reltol=0.01, time_limit=15.0)
+                   r_total = sum(v.mean for v in volumes)
+                   n_pos = count(v -> v.mean > 0, volumes)
+                   detail = join([string(round(v.mean, digits=4)) for v in volumes], ", ")
+                   result[] = "Total R-index: " * string(round(r_total, digits=4)) *
+                              "\nPositive regimes: " * string(n_pos) *
+                              "\nVolumes: " * detail
+               catch e
+                   result[] = "Error: " * string(e)
+               end
+           end
+           DOM.div(
+               DOM.h1("BAC-Explorer v9"),
+               DOM.p("N matrix:"), n_field,
+               DOM.p("L matrix:"), l_field,
+               btn,
+               DOM.hr(),
+               DOM.h2("Result"),
+               DOM.pre(result),
+           )
+       end
+
+julia>
+
+julia> server = Bonito.Server(app, "127.0.0.1", 8110)
+┌ Warning: Port in use, using different port. New port: 8111
+└ @ Bonito.HTTPServer C:\Users\Computer Arena\.julia\packages\Bonito\otB2C\src\HTTPServer\implementation.jl:458
+Server:
+  isrunning: true
+  listen_url: http://localhost:8111
+  online_url: http://localhost:8111
+  http routes: 1
+    / => App
+  websocket routes: 0
+
+
+julia> ^C
+
+julia> [ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 4 regimes found and 4 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+[ Info: 3.Building regime objects...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+[ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 4 regimes found and 4 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+[ Info: 3.Building regime objects...
+[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+Progress:  50%|███████████████████████████████████████████████████████████████████████                                                                      |  ETA: 0:00:00[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: Finished.
+Progress: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| Time: 0:00:00
+[ Info: Finished.
+[ Info: All regimes converged after 100000 samples.
+[ Info: All regimes converged after 100000 samples.
+[ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 16 regimes found and 16 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+Progress: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| Time: 0:00:00
+[ Info: 3.Building regime objects...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: Finished.
+Calculating... 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| Time: 0:00:03
+[ Info: All regimes converged after 400000 samples.
+[ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 12 regimes found and 12 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+Progress: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| Time: 0:00:00
+[ Info: 3.Building regime objects...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: Finished.
+Calculating... 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| Time: 0:00:04
+[ Info: All regimes converged after 1700000 samples.
+julia>
+
+julia> open("C:\\\\bmac-julia\\\\bac_explorer_v9_working.jl", "w") do io
+           println(io, "# BAC-Explorer v9 — working version, $(Dates.now())")
+           println(io, "# Verified: single reaction, independent pair, repressed topology")
+           println(io)
+           println(io, "using Pkg")
+           println(io, "Pkg.activate(\"C:\\\\\\\\BindingAndCatalysis.jl\")")
+           println(io, "using BindingAndCatalysis, LinearAlgebra, SparseArrays, Bonito")
+           println(io, "Base.muladd(a::Real, b::BindingAndCatalysis.ExactLogExpr, c::BindingAndCatalysis.ExactLogExpr) = (a * b) + c")
+           println(io)
+           println(io, "# Paste the app do-block and server call from the working session here.")
+       end
+ERROR: UndefVarError: `Dates` not defined in `Main`
+Suggestion: check for spelling errors or missing imports.
+Hint: Dates is loaded but not imported in the active module Main.
+Stacktrace:
+ [1] (::var"#62#63")(io::IOStream)
+   @ Main .\REPL[11]:2
+ [2] open(::var"#62#63", ::String, ::Vararg{String}; kwargs::@Kwargs{})
+   @ Base .\io.jl:412
+ [3] open(::Function, ::String, ::String)
+   @ Base .\io.jl:409
+ [4] top-level scope
+   @ REPL[11]:1
+
+julia> println("Template saved.")
+Template saved.
+
+julia> open("C:\\\\bmac-julia\\\\bac_explorer_v9_working.jl", "w") do io
+           println(io, "# BAC-Explorer v9 — working version")
+           println(io, "# Verified: single reaction, independent pair, repressed topology")
+           println(io)
+           println(io, "using Pkg")
+           println(io, "Pkg.activate(\"C:\\\\\\\\BindingAndCatalysis.jl\")")
+           println(io, "using BindingAndCatalysis, LinearAlgebra, SparseArrays, Bonito")
+           println(io, "Base.muladd(a::Real, b::BindingAndCatalysis.ExactLogExpr, c::BindingAndCatalysis.ExactLogExpr) = (a * b) + c")
+           println(io)
+           println(io, "# Paste the app do-block and server call from the working session here.")
+       end
+julia> open("C:\\\\bmac-julia\\\\bac_explorer_v9_working.jl", "a") do io
+           println(io)
+           println(io, "app = App() do")
+           println(io, "    n_field = Bonito.TextField(\"1 1 -1\")")
+           println(io, "    l_field = Bonito.TextField(\"1 0 1\")")
+           println(io, "    btn = Bonito.Button(\"Compute R-index\")")
+           println(io, "    result = Bonito.Observable(\"Enter N and L, then click.\")")
+           println(io, "    on(btn) do _")
+           println(io, "        try")
+           println(io, "            n_rows = split(strip(n_field.value[]), ';')")
+           println(io, "            l_rows = split(strip(l_field.value[]), ';')")
+           println(io, "            N_matrix = reduce(vcat, [reshape(parse.(Int, split(strip(r))), 1, :) for r in n_rows])")
+           println(io, "            L_matrix = reduce(vcat, [reshape(parse.(Int, split(strip(r))), 1, :) for r in l_rows])")
+           println(io, "            n_species = size(N_matrix, 2)")
+           println(io, "            x_sym = [Symbol(\"x\$i\") for i in 1:n_species]")
+           println(io, "            q_sym = [Symbol(\"t\$i\") for i in 1:size(L_matrix, 1)]")
+           println(io, "            K_sym = [Symbol(\"K\$i\") for i in 1:size(N_matrix, 1)]")
+           println(io, "            model = Bnc(N=N_matrix, L=L_matrix, x_sym=x_sym, q_sym=q_sym, K_sym=K_sym)")
+           println(io, "            volumes = get_volumes(model; reltol=0.01, time_limit=15.0)")
+           println(io, "            r_total = sum(v.mean for v in volumes)")
+           println(io, "            n_pos = count(v -> v.mean > 0, volumes)")
+           println(io, "            detail = join([string(round(v.mean, digits=4)) for v in volumes], \", \")")
+           println(io, "            result[] = \"Total R-index: \" * string(round(r_total, digits=4)) * \"\\nPositive regimes: \" * string(n_pos) * \"\\nVolumes: \" * detail")
+           println(io, "        catch e")
+           println(io, "            result[] = \"Error: \" * string(e)")
+           println(io, "        end")
+           println(io, "    end")
+           println(io, "    DOM.div(DOM.h1(\"BAC-Explorer v9\"), DOM.p(\"N matrix:\"), n_field, DOM.p(\"L matrix:\"), l_field, btn, DOM.hr(), DOM.h2(\"Result\"), DOM.pre(result))")
+           println(io, "end")
+           println(io)
+           println(io, "server = Bonito.Server(app, \"127.0.0.1\", 8110)")
+       end
+
+julia> println("App code appended. Size: ", filesize("C:\\\\bmac-julia\\\\bac_explorer_v9_working.jl"), " bytes")
+App code appended. Size: 1941 bytes
+
+julia> include("C:\\bmac-julia\\bac_explorer_v9_working.jl")
+  Activating project at `C:\BindingAndCatalysis.jl`
+┌ Warning: Port in use, using different port. New port: 8112
+└ @ Bonito.HTTPServer C:\Users\Computer Arena\.julia\packages\Bonito\otB2C\src\HTTPServer\implementation.jl:458
+Server:
+  isrunning: true
+  listen_url: http://localhost:8112
+  online_url: http://localhost:8112
+  http routes: 1
+    / => App
+  websocket routes: 0
+
+
+julia> [ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 4 regimes found and 4 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+[ Info: 3.Building regime objects...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: Finished.
+[ Info: All regimes converged after 100000 samples.
+julia>
+
+julia> using Bonito
+
+julia>
+
+julia> app = App() do
+           fi = Bonito.FileInput()
+           status = Bonito.Observable("No file uploaded yet.")
+           on(fi.value) do val
+               if val === nothing
+                   status[] = "Still no file."
+               else
+                   status[] = "Type: " * string(typeof(val)) * "\n" *
+                              "Keys: " * string(propertynames(val))
+                                      end
+           end
+           DOM.div(
+               DOM.h1("FileInput API Test"),
+               DOM.p("Select any file. We are inspecting what the widget returns."),
+               fi,
+               DOM.hr(),
+               DOM.h2("Status"),
+               DOM.pre(status),
+           )
+       end
+
+julia>
+
+julia> server = Bonito.Server(app, "127.0.0.1", 8115)
+Server:
+  isrunning: true
+  listen_url: http://localhost:8115
+  online_url: http://localhost:8115
+  http routes: 1
+    / => App
+  websocket routes: 0
+
+
+julia> app = App() do
+           fi = Bonito.FileInput()
+           btn = Bonito.Button("Read file")
+               status = Bonito.Observable("No file read yet.")
+           on(btn) do _
+               val = fi.value[]
+               if val === nothing
+                   status[] = "fi.value[] is nothing"
+               else
+                   status[] = "Type: " * string(typeof(val)) *
+                              "\nValue: " * string(val)[1:min(500, length(string(val)))]
+               end
+           end
+           DOM.div(
+               DOM.h1("FileInput Manual Read"),
+               DOM.p("Select a file, then click Read file."),
+               fi,
+               btn,
+               DOM.hr(),
+               DOM.h2("Status"),
+               DOM.pre(status),
+           )
+       end
+
+julia>
+
+julia> server = Bonito.Server(app, "127.0.0.1", 8116)
+Server:
+  isrunning: true
+  listen_url: http://localhost:8116
+  online_url: http://localhost:8116
+  http routes: 1
+    / => App
+  websocket routes: 0
+
+
+julia> const EXAMPLES = Dict(
+           "Single reaction" => (
+               N = "1 1 -1",
+               L = "1 0 1 ; 0 1 1"
+           ),
+           "Independent pair (promoter + RBS)" => (
+               N = "1 1 -1 0 0 0 ; 0 0 0 1 1 -1",
+               L = "1 0 1 0 0 0 ; 0 1 1 0 0 0 ; 0 0 0 1 0 1 ; 0 0 0 0 1 1"
+           ),
+           "Repressed promoter (competitive)" => (
+               N = "1 1 -1 0 0 ; 0 1 0 1 -1",
+               L = "1 0 1 0 0 ; 0 1 1 0 1 ; 0 0 0 1 1"
+           ),
+           "Activated promoter (sequential)" => (
+               N = "1 1 -1 0 0 ; 0 0 1 1 -1",
+               L = "1 0 1 0 0 ; 0 1 1 1 1 ; 0 0 0 1 1"
+           ),
+       )
+Dict{String, @NamedTuple{N::String, L::String}} with 4 entries:
+  "Single reaction"                   => (N = "1 1 -1", L = "1 0 1 ; 0 1 1")
+  "Independent pair (promoter + RBS)" => (N = "1 1 -1 0 0 0 ; 0 0 0 1 1 -1", L = "1 0 1 0 0 0 ; 0 1 1 0 0 0 ; 0 0 0 1 0 1 ; 0 0 0 0 1 1")
+  "Activated promoter (sequential)"   => (N = "1 1 -1 0 0 ; 0 0 1 1 -1", L = "1 0 1 0 0 ; 0 1 1 1 1 ; 0 0 0 1 1")
+  "Repressed promoter (competitive)"  => (N = "1 1 -1 0 0 ; 0 1 0 1 -1", L = "1 0 1 0 0 ; 0 1 1 0 1 ; 0 0 0 1 1")
+
+julia>
+
+julia> app = App() do
+           ex_dropdown = Bonito.Dropdown(collect(keys(EXAMPLES)))
+           n_field = Bonito.TextField("1 1 -1")
+           l_field = Bonito.TextField("1 0 1 ; 0 1 1")
+           btn = Bonito.Button("Compute R-index")
+           result = Bonito.Observable("Pick an example or enter your own, then click.")
+
+           on(ex_dropdown.value) do name
+               ex = EXAMPLES[name]
+                       n_field.value[] = ex.N
+               l_field.value[] = ex.L
+           end
+
+           on(btn) do _
+               try
+                   n_rows = split(strip(n_field.value[]), ';')
+                   l_rows = split(strip(l_field.value[]), ';')
+                   N_matrix = reduce(vcat, [reshape(parse.(Int, split(strip(r))), 1, :) for r in n_rows])
+                   L_matrix = reduce(vcat, [reshape(parse.(Int, split(strip(r))), 1, :) for r in l_rows])
+                   n_species = size(N_matrix, 2)
+                   x_sym = [Symbol("x$i") for i in 1:n_species]
+                   q_sym = [Symbol("t$i") for i in 1:size(L_matrix, 1)]
+                   K_sym = [Symbol("K$i") for i in 1:size(N_matrix, 1)]
+                   model = Bnc(N=N_matrix, L=L_matrix, x_sym=x_sym, q_sym=q_sym, K_sym=K_sym)
+                   volumes = get_volumes(model; reltol=0.01, time_limit=15.0)
+                   r_total = sum(v.mean for v in volumes)
+                   n_pos = count(v -> v.mean > 0, volumes)
+                   detail = join([string(round(v.mean, digits=4)) for v in volumes], ", ")
+                   result[] = "Total R-index: " * string(round(r_total, digits=4)) *
+                              "\nPositive regimes: " * string(n_pos) *
+                              "\nVolumes: " * detail
+               catch e
+                   result[] = "Error: " * string(e)
+               end
+           end
+
+           DOM.div(
+               DOM.h1("BAC-Explorer v10"),
+                       DOM.p("Pick a preset circuit or enter your own."),
+               ex_dropdown,
+               DOM.hr(),
+               DOM.p("N matrix:"), n_field,
+               DOM.p("L matrix:"), l_field,
+               btn,
+               DOM.hr(),
+               DOM.h2("Result"),
+               DOM.pre(result),
+           )
+       end
+
+julia>
+
+julia> server = Bonito.Server(app, "127.0.0.1", 8120)
+Server:
+  isrunning: true
+  listen_url: http://localhost:8120
+  online_url: http://localhost:8120
+  http routes: 1
+    / => App
+  websocket routes: 0
+
+
+julia> [ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 12 regimes found and 12 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+[ Info: 3.Building regime objects...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: Finished.
+Calculating... 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| Time: 0:00:01
+[ Info: All regimes converged after 1700000 samples.
+┌ Warning: L * N' is nonzero; qK2x defaults to :homotopy and :free_energy requests are redirected to :homotopy for this model.
+└ @ BindingAndCatalysis C:\BindingAndCatalysis.jl\src\initialize.jl:99
+[ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 12 regimes found and 12 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+[ Info: 3.Building regime objects...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: Finished.
+[ Info: All regimes converged after 1700000 samples.
+[ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 12 regimes found and 12 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+[ Info: 3.Building regime objects...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: Finished.
+[ Info: All regimes converged after 1700000 samples.
+julia>
+
+julia> app = App() do
+           fi = Bonito.FileInput()
+           btn = Bonito.Button("Read file")
+           status = Bonito.Observable("No file read yet.")
+           on(btn) do _
+               val = fi.value[]
+               if val === nothing
+                   status[] = "fi.value[] is nothing"
+               else
+                   status[] = "Type: " * string(typeof(val)) *
+                              "\nValue: " * string(val)[1:min(500, length(string(val)))]
+               end
+           end
+           DOM.div(
+               DOM.h1("FileInput Manual Read"),
+               DOM.p("Select a file, then click Read file."),
+               fi,
+               btn,
+               DOM.hr(),
+               DOM.h2("Status"),
+               DOM.pre(status),
+                   )
+                   end
+
+julia>
+
+julia> server = Bonito.Server(app, "127.0.0.1", 8118)
+Server:
+  isrunning: true
+  listen_url: http://localhost:8118
+  online_url: http://localhost:8118
+  http routes: 1
+    / => App
+  websocket routes: 0
+
+
+julia> app = App() do
+           n_field = Bonito.TextField("1 1 -1 ; 0 1 0 1 -1")
+           l_field = Bonito.TextField("1 0 1 0 0 ; 0 1 1 0 1 ; 0 0 0 1 1")
+           btn = Bonito.Button("Compute R-index")
+           result = Bonito.Observable("Paste CSV content or space-separated matrices, then click.")
+           on(btn) do _
+               try
+                   parse_row(s) = parse.(Int, split(strip(s), r"[,\s]+"))
+                   n_rows = split(strip(n_field.value[]), r"[;\\n]+")
+                   l_rows = split(strip(l_field.value[]), r"[;\\n]+")
+                   N_matrix = reduce(vcat, [reshape(parse_row(r), 1, :) for r in n_rows if !isempty(strip(r))])
+                               L_matrix = reduce(vcat, [reshape(parse_row(r), 1, :) for r in l_rows if !isempty(strip(r))])
+                   n_species = size(N_matrix, 2)
+                   x_sym = [Symbol("x$i") for i in 1:n_species]
+                   q_sym = [Symbol("t$i") for i in 1:size(L_matrix, 1)]
+                   K_sym = [Symbol("K$i") for i in 1:size(N_matrix, 1)]
+                   model = Bnc(N=N_matrix, L=L_matrix, x_sym=x_sym, q_sym=q_sym, K_sym=K_sym)
+                               volumes = get_volumes(model; reltol=0.01, time_limit=15.0)
+                   r_total = sum(v.mean for v in volumes)
+                   n_pos = count(v -> v.mean > 0, volumes)
+                   detail = join([string(round(v.mean, digits=4)) for v in volumes], ", ")
+                   result[] = "Total R-index: " * string(round(r_total, digits=4)) *
+                                          "\nPositive regimes: " * string(n_pos) *
+                              "\nVolumes: " * detail
+               catch e
+                   result[] = "Error: " * string(e)
+                           end
+           end
+           DOM.div(
+               DOM.h1("BAC-Explorer v11"),
+                       DOM.p("Accept both CSV and space-separated input. Rows separated by ; or newline."),
+               DOM.p("N matrix (paste from Excel or type):"), n_field,
+               DOM.p("L matrix:"), l_field,
+               btn,
+               DOM.hr(),
+               DOM.h2("Result"),
+               DOM.pre(result),
+           )
+       end
+
+julia>
+
+julia> server = Bonito.Server(app, "127.0.0.1", 8120)
+┌ Warning: Port in use, using different port. New port: 8121
+└ @ Bonito.HTTPServer C:\Users\Computer Arena\.julia\packages\Bonito\otB2C\src\HTTPServer\implementation.jl:458
+Server:
+  isrunning: true
+  listen_url: http://localhost:8121
+  online_url: http://localhost:8121
+  http routes: 1
+    / => App
+  websocket routes: 0
+
+
+julia> [ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 4 regimes found and 4 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+[ Info: 3.Building regime objects...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: Finished.
+[ Info: All regimes converged after 100000 samples.
+[ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 4 regimes found and 4 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+[ Info: 3.Building regime objects...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: Finished.
+[ Info: All regimes converged after 100000 samples.
+julia>
+
+julia> app = App() do
+           n_field = Bonito.TextField("1,1,-1")
+               l_field = Bonito.TextField("1,0,1 ; 0,1,1")
+           btn = Bonito.Button("Compute R-index")
+               result = Bonito.Observable("Enter N and L. Commas, spaces, and semicolons all work.")
+           on(btn) do _
+               try
+                   parse_row(s) = parse.(Int, split(strip(s), r"[,\s]+"))
+                   n_rows = split(strip(n_field.value[]), r"[;\n]+")
+                   l_rows = split(strip(l_field.value[]), r"[;\n]+")
+                   N_matrix = reduce(vcat, [reshape(parse_row(r), 1, :) for r in n_rows if !isempty(strip(r))])
+                   L_matrix = reduce(vcat, [reshape(parse_row(r), 1, :) for r in l_rows if !isempty(strip(r))])
+                   n_species = size(N_matrix, 2)
+                   x_sym = [Symbol("x$i") for i in 1:n_species]
+                   q_sym = [Symbol("t$i") for i in 1:size(L_matrix, 1)]
+                   K_sym = [Symbol("K$i") for i in 1:size(N_matrix, 1)]
+                   model = Bnc(N=N_matrix, L=L_matrix, x_sym=x_sym, q_sym=q_sym, K_sym=K_sym)
+                   volumes = get_volumes(model; reltol=0.01, time_limit=15.0)
+                   r_total = sum(v.mean for v in volumes)
+                   n_pos = count(v -> v.mean > 0, volumes)
+                   detail = join([string(round(v.mean, digits=4)) for v in volumes], ", ")
+                   result[] = "Total R-index: " * string(round(r_total, digits=4)) *
+                              "\nPositive regimes: " * string(n_pos) *
+                              "\nVolumes: " * detail
+               catch e
+                   result[] = "Error: " * string(e)
+               end
+           end
+           DOM.div(
+               DOM.h1("BAC-Explorer v11"),
+               DOM.p("Accepts commas, spaces, or semicolons as separators."),
+               DOM.p("N matrix:"), n_field,
+               DOM.p("L matrix:"), l_field,
+               btn,
+               DOM.hr(),
+               DOM.h2("Result"),
+               DOM.pre(result),
+           )
+       end
+
+julia>
+
+julia> server = Bonito.Server(app, "127.0.0.1", 8130)
+Server:
+  isrunning: true
+  listen_url: http://localhost:8130
+  online_url: http://localhost:8130
+  http routes: 1
+    / => App
+  websocket routes: 0
+
+
+julia> [ Info: ---------------------Start finding all regimes--------------------
+[ Info: Finished, with 4 regimes found and 4 asymptotic regimes.
+[ Info: 2.Building x-neighbor regime graph...
+[ Info: 3.Building regime objects...
+[ Info: 4.Propagating affine data and deferred nullity labels...
+[ Info: 5.Calculating qK change directions on the regime graph...
+[ Info: Finished.
+[ Info: All regimes converged after 100000 samples.
+julia>
+
+julia> content = read("C:\\\\bmac-julia\\\\bac_explorer_v9_working.jl", String)
+"# BAC-Explorer v9 — working version\n# Verified: single reaction, independent pair, repressed topology\n\nusing Pkg\nPkg.activate(\"C:\\\\\\\\BindingAndCatalysis.jl\")\nusing BindingAndCatalysis, LinearAlgebra, SparseArrays, Bonito\nBase.muladd(a::Real, b::BindingAndCatalysis.ExactLogExpr, c::BindingAndCatalysis.ExactLogExpr) = (a * b) + c\n\n# Paste the app do-block and server call from the working session here.\n\napp = App() do\n    n_field = Bonito.TextField(\"1 1 -1\")\n    l_field = Bonito.TextField(\"1 0 1\")\n    btn = Bonito.Button(\"Compute R-index\")\n    result = Bonito.O" ⋯ 813 bytes ⋯ "es)\n            n_pos = count(v -> v.mean > 0, volumes)\n            detail = join([string(round(v.mean, digits=4)) for v in volumes], \", \")\n            result[] = \"Total R-index: \" * string(round(r_total, digits=4)) * \"\\nPositive regimes: \" * string(n_pos) * \"\\nVolumes: \" * detail\n        catch e\n            result[] = \"Error: \" * string(e)\n        end\n    end\n    DOM.div(DOM.h1(\"BAC-Explorer v9\"), DOM.p(\"N matrix:\"), n_field, DOM.p(\"L matrix:\"), l_field, btn, DOM.hr(), DOM.h2(\"Result\"), DOM.pre(result))\nend\n\nserver = Bonito.Server(app, \"127.0.0.1\", 8110)\n"
+
+julia> println("Old file size: ", length(content), " chars")
+Old file size: 1939 chars

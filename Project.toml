@@ -1,0 +1,12 @@
+[deps]
+BindingAndCatalysis = "b532a4b1-2c45-4c12-bcaf-8695372aa40c"
+Bonito = "824d6782-a2ef-11e9-3a09-e5662e0c26f8"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+GraphMakie = "1ecd5474-83a3-4783-bb4f-06765db800d2"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+Parsers = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
+Polyhedra = "67491407-f73d-577b-9b50-8179a7c68029"
+
+[sources]
+BindingAndCatalysis = {rev = "ifac2026", url = "https://github.com/Qinguo25/BindingAndCatalysis.jl"}

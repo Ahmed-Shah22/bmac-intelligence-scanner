@@ -1,0 +1,36 @@
+## Entry 7 — Phase 1 Milestone
+
+**What I was trying to understand:** How to convert a DNA sequence into an N matrix,
+and whether different promoter topologies produce different R-indices.
+
+**What I did:**
+1. Gathered 10 well-characterized E. coli promoters from iGEM and literature.
+2. Classified them into three topology classes: constitutive (1 reaction),
+   repressed (2 competing reactions), activated (2 sequential reactions).
+3. Built the N matrix for each topology.
+4. Computed the R-index for each using BindingAndCatalysis.jl.
+5. Built the promoter + RBS combined model (2 independent reactions).
+
+**What I learned:**
+- The R-index is a topological invariant. All 7 constitutive promoters share the
+  same R-index (~1/3) despite different sequences. The sequence determines K,
+  not the topology, and the R-index does not depend on K.
+- The repressed topology (lacUV5, pTet) has 8 positive regimes, sum ~1.000.
+- The activated topology (pBAD) has 6 positive regimes, sum ~0.500. Half of
+  parameter space collapses to zero. Sequential binding is more constrained
+  than competitive binding.
+- The promoter + RBS model (independent reactions) gives joint R-index = 1/9,
+  confirming that independent reactions multiply.
+
+**What I corrected:** Initially assumed the R-index would vary across promoter
+sequences. It does not. It varies across topologies. This reframes Layer 1:
+DNA -> circuit is a topology classifier, not a strength estimator.
+
+**What is still open:** The catalysis layer (transcription and translation).
+Full expression unit requires RNAP and ribosome to actually produce mRNA and
+protein, not just bind.
+
+**New files saved:**
+- promoter_dataset.txt (10 promoters, topology classes)
+- phase1_dataset.txt (sequence -> topology -> R-index)
+- combined_model_result.txt (promoter + RBS binding model)

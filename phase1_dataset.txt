@@ -1,0 +1,13 @@
+# Phase 1 Dataset: Sequence → Topology → R-index
+# Format: name | sequence | regulator | topology_class | n_reactions | R_index_annotation
+
+J23100 | TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC | Constitutive | constitutive | 1 | sum=1.000
+J23101 | TTTACAGCTAGCTCAGTCCTAGGTATTATGCTAGC | Constitutive | constitutive | 1 | sum=1.000
+J23102 | TTGACAGCTAGCTCAGTCCTAGGTACTGTGCTAGC | Constitutive | constitutive | 1 | sum=1.000
+J23103 | CTGATAGCTAGCTCAGTCCTAGGGATTATGCTAGC | Constitutive | constitutive | 1 | sum=1.000
+J23104 | TTGACAGCTAGCTCAGTCCTAGGTATTGTGCTAGC | Constitutive | constitutive | 1 | sum=1.000
+J23105 | TTTACGGCTAGCTCAGTCCTAGGTACTATGCTAGC | Constitutive | constitutive | 1 | sum=1.000
+J23106 | TTTACGGCTAGCTCAGTCCTAGGTATAGTGCTAGC | Constitutive | constitutive | 1 | sum=1.000
+lacUV5 | TAACCAGGCTTTACACTTTATGCTTCCGGCTCGTATAATGTGTGGAAGGATCC | LacI | repressed_competitive | 2 | sum=1.000_8regimes
+pTet | TCCCTATCAGTGATAGAGATTGACATCCCTATCAGTGATAGAGATACTGAGCAC | TetR | repressed_competitive | 2 | sum=1.000_8regimes
+pBAD | CTCCATACCCGTTTTTTTGGGCTAGC | AraC | activated_sequential | 2 | sum=0.500_6regimes

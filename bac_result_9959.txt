@@ -1,0 +1,6 @@
+Sequence: TAACCAGGCTTTACACTTTATGCTTCCGGCTCGTATAATGTGTGGAAGGATCC
+Name: lacUV5
+Topology: repressed
+R-index: 0.9986
+Regimes: 8
+Interpretation: Robust design. Most of parameter space produces the desired behavior.

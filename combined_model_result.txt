@@ -1,0 +1,25 @@
+# Promoter + RBS Combined Binding Model
+# Topology: two independent binding reactions
+#   RNAP + P <=> C_P
+#   Ribosome + RBS <=> C_B
+# Species: [RNAP, P, C_P, Ribosome, RBS, C_B]
+# N matrix:
+#   [ 1  1 -1  0  0  0;
+#     0  0  0  1  1 -1]
+# Full-dimensional regimes: 9
+# Zero-volume regimes: 7
+#
+# Per-regime volumes (9 nonzero):
+#   regime 1: 0.1104
+#   regime 2: 0.1112
+#   regime 3: 0.1110
+#   regime 5: 0.1113
+#   regime 6: 0.1114
+#   regime 7: 0.1115
+#   regime 9: 0.1105
+#   regime 10: 0.1111
+#   regime 11: 0.1118
+# Sum: ~1.000
+#
+# Joint R-index (both C_P and C_B dominate): 1/9 ~ 0.111
+# Confirms: independent reactions multiply. Engine handles independence correctly.

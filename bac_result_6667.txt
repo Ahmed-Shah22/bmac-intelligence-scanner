@@ -1,0 +1,6 @@
+Sequence: TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC
+Name: J23100
+Topology: constitutive
+R-index: 1.0
+Regimes: 3
+Interpretation: Robust design. Most of parameter space produces the desired behavior.
