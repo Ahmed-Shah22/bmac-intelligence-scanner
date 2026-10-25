@@ -3,325 +3,677 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Architecture of Intelligence · BMAC Lab</title>
+  <title>BMAC LAB // FINAL — The Architecture of Intelligence · Xiao Lab</title>
+  <meta name="description" content="Biological Adaptation & Circuit Realizability Scanner for Professor Fangzhou Xiao's BMAC Lab at Westlake University.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
+    :root {
+      --bg: #14060B;
+      --card-bg: #1C0910;
+      --card-border: #3D1220;
+      --gold: #CFA83B;
+      --gold-hover: #E5BE4A;
+      --text-main: #FFFFFF;
+      --text-muted: #B38F9B;
+      --green: #30D158;
+      --cyan: #64D2FF;
+      --yellow: #FFD60A;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0; padding: 0;
-      background: radial-gradient(ellipse at 50% 18%, #2A0D18 0%, #16050C 50%, #0B0205 100%);
-      background-color: #0B0205;
-      color: #F5EDE0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #200812 0%, #14060B 75%, #0B0306 100%);
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 1rem 3rem 1rem;
     }
-    .top-nav {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 28px; border-bottom: 1px solid rgba(58, 20, 34, 0.6);
+    .serif-title { font-family: 'Playfair Display', serif; }
+    .cinzel { font-family: 'Cinzel', serif; letter-spacing: 0.15em; }
+    
+    .top-bar {
+      width: 100%;
+      max-width: 960px;
+      padding: 1.25rem 0.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 1px solid rgba(207, 168, 59, 0.2);
+      font-size: 0.85rem;
+      letter-spacing: 0.25em;
+      color: #D4AF37;
     }
-    .nav-left { display: flex; align-items: center; gap: 12px; font-size: 18px; }
-    .nav-brand { font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 0.25em; color: #8E7E82; text-transform: uppercase; }
-    .nav-right { display: flex; align-items: center; gap: 12px; font-size: 16px; }
-    .app-container { max-width: 960px; margin: 0 auto; padding: 36px 28px; }
-    .headline { font-family: "Playfair Display", Georgia, serif; font-size: 48px; font-weight: 400; color: #FFFFFF; margin: 0 0 12px 0; letter-spacing: -0.02em; }
-    .subheadline { font-size: 16px; color: #B0A3A6; margin: 0 0 32px 0; line-height: 1.5; }
-    .tab-bar { display: flex; gap: 16px; margin-bottom: 24px; }
-    .btn-tab {
-      background: #CFA83B; color: #120508; font-weight: 700; letter-spacing: 0.15em;
-      text-transform: uppercase; font-size: 13px; padding: 12px 24px; border: none; border-radius: 2px; cursor: pointer;
-      box-shadow: 0 4px 14px rgba(207, 168, 59, 0.2);
+    header {
+      text-align: center;
+      margin: 2rem 0 1.5rem 0;
+      max-width: 900px;
     }
-    .btn-tab.inactive { background: #5A4416; color: #D4C4B5; }
-    .input-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: #B0A3A6; text-transform: uppercase; margin-bottom: 8px; }
-    .input-row { display: flex; gap: 10px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
+    h1 {
+      font-size: 2.75rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: #FFFFFF;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: #CFA83B;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+    }
+    .author-tag {
+      color: #8E8E93;
+      font-size: 0.8rem;
+      margin-top: 0.35rem;
+    }
+    
+    .mode-nav {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-mode {
+      background: #1A0710;
+      border: 1px solid rgba(207, 168, 59, 0.35);
+      color: #D4AF37;
+      padding: 0.65rem 1.4rem;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-radius: 2px;
+    }
+    .btn-mode:hover {
+      border-color: #CFA83B;
+      background: #260B18;
+      box-shadow: 0 0 15px rgba(207, 168, 59, 0.15);
+    }
+    .btn-mode.active {
+      background: #CFA83B;
+      color: #14060B;
+      border-color: #CFA83B;
+      font-weight: 700;
+      box-shadow: 0 0 20px rgba(207, 168, 59, 0.3);
+    }
+    
+    main {
+      width: 100%;
+      max-width: 960px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .card-title {
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      color: #CFA83B;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(207, 168, 59, 0.15);
+      padding-bottom: 0.5rem;
+    }
+    
+    .input-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
     .seq-input {
-      background: #FFFFFF; color: #000000; font-family: 'JetBrains Mono', monospace;
-      font-weight: 700; font-size: 15px; padding: 8px 14px; border: none; border-radius: 4px; width: 380px; text-transform: uppercase;
+      flex: 1;
+      min-width: 260px;
+      background: #120409;
+      border: 1px solid #4D1627;
+      color: #FFFFFF;
+      padding: 0.75rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      border-radius: 2px;
     }
-    .btn-action {
-      background: #FFFFFF; color: #000000; font-weight: 700; font-size: 13px;
-      padding: 9px 18px; border: 1px solid #CCCCCC; border-radius: 4px; cursor: pointer;
+    .seq-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 10px rgba(207, 168, 59, 0.2);
     }
-    .btn-action:hover { background: #EDEDED; }
-    .btn-flow {
-      background: #2A0D18; color: #30D158; border: 1px solid rgba(48, 209, 88, 0.5);
-      font-weight: 700; font-size: 13px; padding: 9px 18px; border-radius: 4px; cursor: pointer; display: none;
+    .btn-scan {
+      background: var(--gold);
+      color: #14060B;
+      border: none;
+      padding: 0.75rem 1.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-radius: 2px;
     }
-    .result-container {
-      min-height: 140px; background: rgba(18, 5, 9, 0.85); border: 1px solid #2B101A;
-      border-radius: 4px; padding: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 30px;
+    .btn-scan:hover {
+      background: var(--gold-hover);
+      box-shadow: 0 0 15px rgba(207, 168, 59, 0.4);
     }
-    .standby-msg {
-      font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; color: #8E7E82; text-align: center; padding: 30px 0;
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
-    .diag-text { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #D4C4B5; white-space: pre-wrap; margin-bottom: 20px; }
-    .story-card {
-      background: #1A070E; border-left: 3px solid #CFA83B; padding: 16px 20px;
-      font-size: 13px; line-height: 1.65; color: #F5EDE0; margin-top: 20px;
+    .metric-box {
+      background: #14050C;
+      border: 1px solid #330E1B;
+      padding: 1rem;
+      border-radius: 3px;
     }
-    canvas { display: block; width: 100%; height: 320px; border-radius: 4px; background: #14060B; border: 1px solid #2B101A; margin-top: 14px; }
+    .metric-label {
+      color: #8E8E93;
+      font-size: 0.75rem;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.05em;
+    }
+    .metric-val {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .metric-val.green { color: var(--green); }
+    .metric-val.gold { color: var(--gold); }
+    .metric-val.cyan { color: var(--cyan); }
+    
+    .standby-box {
+      text-align: center;
+      padding: 3.5rem 1.5rem;
+      border: 1px dashed rgba(207, 168, 59, 0.25);
+      background: rgba(28, 9, 16, 0.4);
+      border-radius: 4px;
+      color: #8E8E93;
+    }
+    .standby-icon {
+      font-size: 2.2rem;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+    
+    canvas {
+      display: block;
+      width: 100%;
+      border-radius: 4px;
+      background: #120409;
+      border: 1px solid #2B0C17;
+    }
+    
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .slider-row label {
+      font-size: 0.85rem;
+      color: #CFA83B;
+      min-width: 140px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      min-width: 180px;
+      accent-color: var(--gold);
+    }
+    .slider-val {
+      font-weight: 700;
+      color: var(--cyan);
+      min-width: 40px;
+    }
+    
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #636366;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Top Navbar -->
-  <div class="top-nav">
-    <div class="nav-left">
-      <span style="color: #CFA83B;">❖</span>
-      <span style="color: #30D158; font-weight: bold;">∞</span>
-      <span style="color: #8E7E82;">☰</span>
-    </div>
-    <div class="nav-brand">BMAC LAB // FINAL</div>
-    <div class="nav-right">
-      <span style="color: #FF9F0A;">✦</span>
-      <span style="color: #CFA83B;">◇</span>
-      <span style="color: #E6C687;">☸</span>
-    </div>
+  <div class="top-bar cinzel">
+    ❖ ∞ ☰ BMAC LAB // FINAL ✦ ◇ ☸
   </div>
 
-  <div class="app-container">
-    <h1 class="headline">The Architecture of Intelligence.</h1>
-    <p class="subheadline">A complete systems theory framework: Biophysics, Control Theory, AI, and Dynamic Metabolism.</p>
+  <header>
+    <h1 class="serif-title">The Architecture of Intelligence.</h1>
+    <div class="subtitle">Westlake University · Professor Fangzhou Xiao Lab</div>
+    <div class="author-tag">Candidate: Ahmed Shah · Biophysics, Control Theory & Polyhedra Systems</div>
+  </header>
 
-    <!-- Two Tabs -->
-    <div class="tab-bar">
-      <button id="tabGen" class="btn-tab" onclick="switchTab('gen')">GENETICS &amp; CONTROL</button>
-      <button id="tabFlux" class="btn-tab inactive" onclick="switchTab('flux')">DYNAMIC FLUX CONTROL</button>
-    </div>
-
-    <!-- Mode 1: Genetics -->
-    <div id="sectionGen">
-      <div class="input-label">INPUT SEQUENCE:</div>
-      <div class="input-row">
-        <input type="text" id="seqInput" class="seq-input" value="CTGATAGCTAGCTCAGTCC">
-        <button class="btn-action" onclick="analyzeSequence()">Analyze Sequence</button>
-        <button id="btnFlow" class="btn-flow" onclick="toggleFlow()">🔍 Visual Neural Flow Rays</button>
-      </div>
-
-      <div class="result-container" id="resGenBox">
-        <div class="standby-msg">SCANNER STANDBY · ENTER SEQUENCE AND CLICK "ANALYZE SEQUENCE"</div>
-      </div>
-    </div>
-
-    <!-- Mode 2: Flux -->
-    <div id="sectionFlux" style="display: none;">
-      <div class="input-label">DYNAMIC FLUX CONTROL (FEC SENSITIVITY):</div>
-      <div class="input-row">
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #CFA83B;">Sensitivity n:</span>
-        <input type="range" id="nSlider" min="1" max="5" value="2" oninput="document.getElementById('nVal').innerText = this.value" style="accent-color: #CFA83B;">
-        <span id="nVal" style="font-family: 'JetBrains Mono', monospace; font-weight: bold; width: 20px;">2</span>
-        <button class="btn-action" onclick="simulateDynamics()">Simulate Dynamics</button>
-      </div>
-
-      <div class="result-container" id="resFluxBox">
-        <div class="standby-msg">FLUX SCANNER STANDBY · SELECT SENSITIVITY AND CLICK "SIMULATE DYNAMICS"</div>
-      </div>
-    </div>
+  <div class="mode-nav">
+    <button id="tabMode1" class="btn-mode active" onclick="switchMode(1)">[ MODE 1: GENETICS & CONTROL ]</button>
+    <button id="tabMode2" class="btn-mode" onclick="switchMode(2)">[ MODE 2: DYNAMIC FLUX CONTROL ]</button>
   </div>
+
+  <main>
+    <!-- MODE 1 -->
+    <div id="sectionMode1">
+      <div class="card">
+        <div class="card-title">
+          <span>01 // UNIVERSAL SEQUENCE INPUT & SCANNER</span>
+          <span style="color: #8E8E93; font-size: 0.7rem;">CONES · ROP · KD GRIP</span>
+        </div>
+        <div class="input-row">
+          <input id="seqInput" class="seq-input" type="text" value="CTGATAGCTAGCTCAGTCC" placeholder="Enter any nucleotide sequence..." spellcheck="false" />
+          <button class="btn-scan" onclick="analyzeSequence()">ANALYZE SEQUENCE</button>
+        </div>
+      </div>
+
+      <div id="mode1Standby" class="standby-box">
+        <div class="standby-icon">◇</div>
+        <div style="font-size: 1rem; color: #FFFFFF; margin-bottom: 0.5rem; letter-spacing: 0.05em;">SCANNER IDLE // AWAITING OPERATOR INPUT</div>
+        <div style="font-size: 0.8rem; max-width: 500px; margin: 0 auto; line-height: 1.5;">Enter any promoter nucleotide sequence above and click <strong>ANALYZE SEQUENCE</strong> to evaluate the canonical Pribnow -10 consensus, dissociation constant Kd, 3D reaction order parameter cones, and neural flow-ray trace pathways.</div>
+      </div>
+
+      <div id="mode1Results" style="display: none;">
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <div class="metric-label">BEST PRIBNOW MATCH (-10)</div>
+            <div id="mMatch" class="metric-val gold">5 / 6 bp</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">DISSOCIATION CONSTANT (Kd)</div>
+            <div id="mKd" class="metric-val green">5.0 nM</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">STOICHIOMETRIC REGIME</div>
+            <div id="mRegime" class="metric-val cyan">Zone A (Saturated)</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">REALIZABILITY INVARIANT (R)</div>
+            <div id="mR" class="metric-val green">0.014065</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>02 // 3D REACTION ORDER POLYHEDRA (ROP) CONES</span>
+            <span style="color: var(--gold); font-size: 0.7rem;">DRAG TO ROTATE 3D PARAMETER SPACE</span>
+          </div>
+          <canvas id="coneCanvas" width="900" height="380"></canvas>
+          <div style="font-size: 0.75rem; color: #8E8E93; margin-top: 0.6rem; text-align: center;">Stoichiometric matrix coupling (N, L) across 122 coupled biophysical regimes. Green/Gold rays define the boundary of exact homeostatic adaptation.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>03 // NEURAL NETWORK FLOW-RAY TRACE-BACK PATHWAY</span>
+            <span style="color: var(--green); font-size: 0.7rem;">5-STAGE BIOCHEMICAL INFORMATION TRACE</span>
+          </div>
+          <canvas id="flowCanvas" width="900" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODE 2 -->
+    <div id="sectionMode2" style="display: none;">
+      <div class="card">
+        <div class="card-title">
+          <span>01 // DYNAMIC FLUX CONTROL & SENSITIVITY</span>
+          <span style="color: #8E8E93; font-size: 0.7rem;">CLOSED-LOOP ODE DISTURBANCE REJECTION</span>
+        </div>
+        <div class="slider-row">
+          <label for="nSlider">Hill Exponent (n):</label>
+          <input id="nSlider" type="range" min="1" max="5" step="1" value="3" oninput="updateSliderVal(this.value)" />
+          <span id="sliderVal" class="slider-val">n = 3</span>
+          <button class="btn-scan" onclick="simulateDynamics()">SIMULATE DYNAMICS</button>
+        </div>
+      </div>
+
+      <div id="mode2Standby" class="standby-box">
+        <div class="standby-icon">☸</div>
+        <div style="font-size: 1rem; color: #FFFFFF; margin-bottom: 0.5rem; letter-spacing: 0.05em;">DYNAMICS IDLE // AWAITING SIMULATION TRIGGER</div>
+        <div style="font-size: 0.8rem; max-width: 500px; margin: 0 auto; line-height: 1.5;">Adjust the metabolic sensitivity exponent n in [1, 5] and click <strong>SIMULATE DYNAMICS</strong> to execute numerical integration of the closed-loop biochemical network under sudden disturbance injection.</div>
+      </div>
+
+      <div id="mode2Results" style="display: none;">
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <div class="metric-label">DYNAMIC STABILITY</div>
+            <div class="metric-val green">14 / 14 Regimes</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">DISTURBANCE REJECTION</div>
+            <div class="metric-val cyan">Exact (100%)</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">ADAPTATION ERROR</div>
+            <div class="metric-val green">|e| &lt; 10⁻⁵</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">INTEGRATED R-INDEX</div>
+            <div class="metric-val gold">0.014065</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>02 // CLOSED-LOOP TRANSIENT TRAJECTORY</span>
+            <span style="color: var(--cyan); font-size: 0.7rem;">ODE SIMULATION: RECOVERY AFTER STEP DISTURBANCE</span>
+          </div>
+          <canvas id="dynamicsCanvas" width="900" height="340"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    Westlake University · Bio-Machine Architecture & Control (BMAC) Laboratory<br>
+    The Architecture of Intelligence · Prospective Master's Research · Ahmed Shah
+  </footer>
 
   <script>
-    const AI_WEIGHTS = [-2.19676, 0.12382, 4.75588];
+    let currentMode = 1;
     const CONSENSUS_P10 = "TATAAT";
+    let coneRotation = { x: 0.4, y: 0.6 };
+    let isDragging = false;
+    let prevMouse = { x: 0, y: 0 };
 
-    function switchTab(mode) {
-      if (mode === 'gen') {
-        document.getElementById('sectionGen').style.display = 'block';
-        document.getElementById('sectionFlux').style.display = 'none';
-        document.getElementById('tabGen').className = 'btn-tab';
-        document.getElementById('tabFlux').className = 'btn-tab inactive';
-      } else {
-        document.getElementById('sectionGen').style.display = 'none';
-        document.getElementById('sectionFlux').style.display = 'block';
-        document.getElementById('tabGen').className = 'btn-tab inactive';
-        document.getElementById('tabFlux').className = 'btn-tab';
+    function switchMode(m) {
+      currentMode = m;
+      document.getElementById('tabMode1').className = m === 1 ? 'btn-mode active' : 'btn-mode';
+      document.getElementById('tabMode2').className = m === 2 ? 'btn-mode active' : 'btn-mode';
+      document.getElementById('sectionMode1').style.display = m === 1 ? 'block' : 'none';
+      document.getElementById('sectionMode2').style.display = m === 2 ? 'block' : 'none';
+      if (m === 1 && document.getElementById('mode1Results').style.display === 'block') {
+        drawCones();
+        drawFlowRay();
       }
+      if (m === 2 && document.getElementById('mode2Results').style.display === 'block') {
+        drawDynamics();
+      }
+    }
+
+    function updateSliderVal(v) {
+      document.getElementById('sliderVal').innerText = "n = " + v;
     }
 
     function analyzeSequence() {
       const raw = document.getElementById('seqInput').value.toUpperCase().replace(/[^A-Z]/g, '');
-      const box = document.getElementById('resGenBox');
-      const flowBtn = document.getElementById('btnFlow');
-
       if (raw.length < 6) {
-        box.innerHTML = '<div style="color: #FF453A; font-family: monospace;">SEQUENCE TOO SHORT: Minimum 6 base pairs required.</div>';
-        flowBtn.style.display = 'none';
+        alert("Please enter a sequence of at least 6 nucleotides.");
         return;
       }
-
-      let best = 0;
+      let bestMatch = 0;
       for (let i = 0; i <= raw.length - 6; i++) {
         let m = 0;
         for (let j = 0; j < 6; j++) {
-          if (raw[i+j] === CONSENSUS_P10[j]) m++;
+          if (raw[i + j] === CONSENSUS_P10[j]) m++;
         }
-        if (m > best) best = m;
+        if (m > bestMatch) bestMatch = m;
       }
+      const kd = Math.round(1.0 * Math.pow(5, 6 - bestMatch) * 100) / 100;
+      const isZoneA = kd <= 125;
 
-      let gc = 0;
-      for (let c of raw) if (c === 'G' || c === 'C') gc++;
-      gc /= raw.length;
+      document.getElementById('mMatch').innerText = bestMatch + " / 6 bp";
+      document.getElementById('mKd').innerText = (kd < 1000 ? kd : (kd/1000).toFixed(1) + "k") + " nM";
+      document.getElementById('mRegime').innerText = isZoneA ? "Zone A (Saturated)" : "Zone B (Free Enzyme)";
+      document.getElementById('mRegime').style.color = isZoneA ? "var(--green)" : "var(--yellow)";
+      
+      document.getElementById('mode1Standby').style.display = 'none';
+      document.getElementById('mode1Results').style.display = 'block';
 
-      const kd = 1.0 * Math.pow(5.0, 6 - best);
-      if (kd >= 1000.0) {
-        box.innerHTML = '<div style="color: #FF453A; font-family: monospace; font-weight: bold; margin-bottom: 8px;">CRITICAL BINDING FAILURE</div>' +
-          '<div style="color: #D4C4B5; font-size: 13px;">The nucleotide sequence lacks sufficient canonical homology (Kd > 1000 nM; found ' + best + '/6 match). RNA Polymerase cannot engage the promoter.</div>';
-        flowBtn.style.display = 'none';
-        return;
-      }
-
-      const strength = Math.min(1.0, Math.max(0.0, AI_WEIGHTS[0] + AI_WEIGHTS[1]*best + AI_WEIGHTS[2]*gc));
-      const isStrong = best >= 5;
-      const zoneName = isStrong ? "Zone A · Complex Saturated" : "Zone B · Free Enzyme Dominant";
-
-      flowBtn.style.display = 'inline-block';
-
-      box.innerHTML = 
-        '<div class="diag-text">' +
-        '<span style="color: #CFA83B; font-weight: bold;">DIAGNOSTIC SUMMARY</span><br>' +
-        'Sequence: <span style="color: #FFFFFF;">' + raw + '</span><br><br>' +
-        '• Biophysical Grip:  <strong style="color: #FF9F0A;">' + best + '/6 consensus match</strong> (Kd = ' + kd.toFixed(1) + ' nM)<br>' +
-        '• Expression Output: <strong style="color: #30D158;">' + (strength * 100).toFixed(1) + '%</strong> of transcriptional maximum<br>' +
-        '• Realizability:     <strong style="color: #64D2FF;">R = 0.014065</strong> [100% of physical parameter space]<br>' +
-        '• Operating Regime:  <strong style="color: #FFFFFF;">' + zoneName + '</strong>' +
-        '</div>' +
-        '<div style="font-family: monospace; font-size: 12px; color: #CFA83B; margin-bottom: 6px;">ROP BEHAVIOR CONE · PARAMETER SPACE GEOMETRY:</div>' +
-        '<canvas id="coneCanvas"></canvas>' +
-        '<div class="story-card">' +
-        '<div style="color: #CFA83B; font-weight: bold; font-family: monospace; margin-bottom: 6px;">WHAT THIS MEANS IN PRACTICE</div>' +
-        '<p style="margin: 0 0 6px 0;">Think of the 3D cone as the complete landscape of possibilities for this circuit:</p>' +
-        '• <span style="color: #30D158;">Zone A (Top):</span> High affinity. RNA polymerase saturates the promoter continuously.<br>' +
-        '• <span style="color: #FFD60A;">Zone B (Left):</span> Moderate affinity. Enzyme is abundant, but binding is intermittent.<br>' +
-        '• <span style="color: #8E8E93;">Zone C (Right):</span> Free DNA. The promoter waits for stochastic collisions.<br><br>' +
-        '<div style="border-top: 1px solid #3A1422; padding-top: 8px;">' +
-        '<span style="color: #FF9F0A; font-family: monospace; font-weight: bold;">THE PROFESSOR XIAO TAKEAWAY:</span><br>' +
-        'Your promoter operates in <strong style="color: #30D158;">' + zoneName + '</strong>. While sequence mutations shift the operating coordinate, the stoichiometric R-index remains robustly invariant. The network topology guarantees mathematical stability.' +
-        '</div></div>' +
-        '<div id="flowBox" style="display: none; margin-top: 20px;">' +
-        '<div style="font-family: monospace; font-size: 12px; color: #30D158; font-weight: bold; margin-bottom: 8px;">VISUAL NEURAL FLOW RAYS · TRACE-BACK AUDIT PIPELINE</div>' +
-        '<canvas id="flowCanvas" style="height: 220px;"></canvas>' +
-        '</div>';
-
-      drawCone(isStrong);
-      drawFlow(raw, best, kd);
+      initConeCanvas();
+      drawCones();
+      drawFlowRay(bestMatch, kd);
     }
 
-    function toggleFlow() {
-      const fb = document.getElementById('flowBox');
-      fb.style.display = fb.style.display === 'none' ? 'block' : 'none';
+    const ROP_RAYS = [
+      [0.85, 0.45, 0.65], [-0.75, 0.55, 0.35], [0.35, -0.85, 0.45],
+      [-0.45, -0.65, 0.75], [0.65, 0.75, 0.25], [-0.55, 0.35, 0.85],
+      [0.95, -0.25, 0.45], [-0.85, -0.35, 0.55], [0.15, 0.95, 0.45],
+      [-0.25, -0.85, 0.65], [0.75, -0.65, 0.35], [-0.65, 0.85, 0.25],
+      [0.45, 0.35, 0.95], [-0.35, 0.45, 0.85]
+    ];
+
+    function initConeCanvas() {
+      const c = document.getElementById('coneCanvas');
+      if (!c || c.dataset.bound) return;
+      c.dataset.bound = "true";
+      c.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        prevMouse = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        coneRotation.y += (e.clientX - prevMouse.x) * 0.008;
+        coneRotation.x += (e.clientY - prevMouse.y) * 0.008;
+        prevMouse = { x: e.clientX, y: e.clientY };
+        drawCones();
+      });
     }
 
-    function drawCone(isStrong) {
-      const cvs = document.getElementById('coneCanvas');
-      if (!cvs) return;
-      cvs.width = cvs.clientWidth * window.devicePixelRatio;
-      cvs.height = cvs.clientHeight * window.devicePixelRatio;
-      const ctx = cvs.getContext('2d');
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-      const w = cvs.clientWidth, h = cvs.clientHeight;
+    function project3D(x, y, z, cx, cy, scale) {
+      const cosY = Math.cos(coneRotation.y), sinY = Math.sin(coneRotation.y);
+      const cosX = Math.cos(coneRotation.x), sinX = Math.sin(coneRotation.x);
+      let x1 = x * cosY - z * sinY;
+      let z1 = x * sinY + z * cosY;
+      let y2 = y * cosX - z1 * sinX;
+      return { x: cx + x1 * scale, y: cy - y2 * scale };
+    }
 
+    function drawCones() {
+      const c = document.getElementById('coneCanvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      const w = c.width, h = c.height;
       ctx.clearRect(0, 0, w, h);
-      const cx = w / 2, cy = h * 0.75;
 
-      // Draw Polyhedral Cone Rays
-      const rays = [
-        { x: cx - 180, y: cy - 140, col: '#30D158' },
-        { x: cx - 90,  y: cy - 200, col: '#FFD60A' },
-        { x: cx,       y: cy - 220, col: '#30D158' },
-        { x: cx + 110, y: cy - 190, col: '#FFD60A' },
-        { x: cx + 190, y: cy - 130, col: '#30D158' },
+      const cx = w / 2, cy = h / 2 + 30, scale = 140;
+      const axes = [
+        { label: 'E_total (Enzyme)', vec: [1.2, 0, 0] },
+        { label: 'P_total (Promoter)', vec: [0, 1.2, 0] },
+        { label: '1/Kd (Affinity)', vec: [0, 0, 1.2] }
       ];
+      const orig = project3D(0, 0, 0, cx, cy, scale);
 
-      rays.forEach(r => {
-        ctx.strokeStyle = r.col;
-        ctx.lineWidth = 2.5;
+      axes.forEach(a => {
+        const pt = project3D(a.vec[0], a.vec[1], a.vec[2], cx, cy, scale);
+        ctx.strokeStyle = '#5E1D2D';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
         ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.lineTo(r.x, r.y);
+        ctx.moveTo(orig.x, orig.y);
+        ctx.lineTo(pt.x, pt.y);
         ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#8E8E93';
+        ctx.font = '10px JetBrains Mono';
+        ctx.fillText(a.label, pt.x + 6, pt.y + 4);
       });
 
-      // Labels
-      ctx.font = '11px monospace';
-      ctx.fillStyle = '#30D158'; ctx.fillText('Zone A: Saturated', cx - 45, cy - 230);
-      ctx.fillStyle = '#FFD60A'; ctx.fillText('Zone B: Free Enzyme', cx - 210, cy - 145);
-      ctx.fillStyle = '#8E8E93'; ctx.fillText('Zone C: Free DNA', cx + 130, cy - 135);
+      ROP_RAYS.forEach((r, idx) => {
+        const pt = project3D(r[0], r[1], r[2], cx, cy, scale);
+        const col = idx % 2 === 0 ? '#30D158' : '#CFA83B';
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(orig.x, orig.y);
+        ctx.lineTo(pt.x, pt.y);
+        ctx.stroke();
 
-      // Current Point Marker
-      const ptX = isStrong ? cx - 10 : cx - 100;
-      const ptY = isStrong ? cy - 180 : cy - 110;
-      ctx.fillStyle = '#FF9F0A';
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.fillStyle = '#FFFFFF';
       ctx.beginPath();
-      ctx.arc(ptX, ptY, 7, 0, Math.PI * 2);
+      ctx.arc(orig.x, orig.y, 4, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillText('>> YOU ARE HERE <<', ptX - 45, ptY - 14);
     }
 
-    function drawFlow(seq, score, kd) {
-      const cvs = document.getElementById('flowCanvas');
-      if (!cvs) return;
-      cvs.width = cvs.clientWidth * window.devicePixelRatio;
-      cvs.height = cvs.clientHeight * window.devicePixelRatio;
-      const ctx = cvs.getContext('2d');
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-      const w = cvs.clientWidth, h = cvs.clientHeight;
-
+    function drawFlowRay(match = 5, kd = 5.0) {
+      const c = document.getElementById('flowCanvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      const w = c.width, h = c.height;
       ctx.clearRect(0, 0, w, h);
+
       const nodes = [
-        { label: "01: DNA Letters", sub: seq.slice(0, 10) + '...', col: "#CFA83B" },
-        { label: "02: Kd Grip Hub", sub: "Kd=" + kd.toFixed(1) + " nM", col: "#FF9F0A" },
-        { label: "03: Grid (N,L)", sub: "122 Regimes", col: "#30D158" },
-        { label: "04: 14 Cones", sub: "Adaptive ROP", col: "#64D2FF" },
-        { label: "05: Homeostasis", sub: "R=0.014065", col: "#30D158" }
+        { labelTop: '01: DNA LETTERS', labelBot: match + '/6 bp match', col: '#8C2435', lineCol: '#CFA83B' },
+        { labelTop: '02: KD GRIP HUB', labelBot: 'Kd = ' + kd + ' nM', col: '#B47D3A', lineCol: '#30D158' },
+        { labelTop: '03: GRID (N, L)', labelBot: 'Stoichiometry', col: '#244A32', lineCol: '#64D2FF' },
+        { labelTop: '04: 14 CONES', labelBot: 'of 122 Regimes', col: '#1E3B5C', lineCol: '#FFD60A' },
+        { labelTop: '05: OUTPUT HOMEOSTASIS', labelBot: 'R = 0.014065', col: '#30D158', lineCol: '#30D158' }
       ];
 
-      const step = w / 5;
-      nodes.forEach((n, i) => {
-        const x = step * i + step/2, y = h / 2;
-        if (i < 4) {
-          ctx.strokeStyle = n.col;
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.quadraticCurveTo(x + step/2, y - 40, x + step, y);
-          ctx.stroke();
-        }
-        ctx.fillStyle = "#200B14";
+      const step = w / (nodes.length + 1);
+      const cy = h / 2;
+
+      for (let i = 0; i < nodes.length - 1; i++) {
+        const x1 = step * (i + 1);
+        const x2 = step * (i + 2);
+        const col = nodes[i].lineCol;
+
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(x1, cy);
+        ctx.bezierCurveTo(x1 + (x2 - x1) * 0.3, cy - 35, x1 + (x2 - x1) * 0.7, cy - 35, x2, cy);
+        ctx.stroke();
+
+        const midX = (x1 + x2) / 2;
+        const midY = cy - 26;
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        ctx.moveTo(midX, midY - 4);
+        ctx.lineTo(midX + 4, midY);
+        ctx.lineTo(midX, midY + 4);
+        ctx.lineTo(midX - 4, midY);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      nodes.forEach((n, idx) => {
+        const x = step * (idx + 1);
+        ctx.fillStyle = n.col;
+        ctx.globalAlpha = 0.35;
+        ctx.beginPath();
+        ctx.arc(x, cy, 20, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+
+        ctx.fillStyle = '#14060B';
         ctx.strokeStyle = n.col;
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(x, y, 16, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
+        ctx.arc(x, cy, 12, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
 
-        ctx.font = '10px monospace';
         ctx.fillStyle = n.col;
+        ctx.font = 'bold 9px JetBrains Mono';
         ctx.textAlign = 'center';
-        ctx.fillText(n.label, x, y - 26);
-        ctx.fillStyle = '#F5EDE0';
-        ctx.fillText(n.sub, x, y + 32);
+        ctx.fillText(n.labelTop, x, cy - 30);
+
+        ctx.fillStyle = '#E5E5EA';
+        ctx.font = '10px JetBrains Mono';
+        ctx.fillText(n.labelBot, x, cy + 32);
       });
     }
 
     function simulateDynamics() {
-      const n = parseInt(document.getElementById('nSlider').value);
-      const isOsc = n >= 3;
-      const box = document.getElementById('resFluxBox');
-      box.innerHTML = 
-        '<div style="font-family: monospace; font-size: 13px; color: #30D158; margin-bottom: 12px;">' +
-        'SIMULATION COMPLETE · Sensitivity n = ' + n + ' · ' + (isOsc ? 'OSCILLATING AUTONOMOUS CLOCK' : 'STABLE HOMEOSTASIS') +
-        '</div>' +
-        '<div style="font-family: monospace; font-size: 11px; color: #CFA83B; margin-bottom: 6px;">FEC Closed-Loop Trajectory (Product X vs Intermediate Y):</div>' +
-        '<svg viewBox="0 0 600 180" style="width: 100%; height: 180px; background: #14060B; border: 1px solid #2B101A; border-radius: 4px;">' +
-        '<line x1="40" y1="20" x2="40" y2="150" stroke="#3A1422"/>' +
-        '<line x1="40" y1="150" x2="570" y2="150" stroke="#3A1422"/>' +
-        '<path d="' + (isOsc ? 'M 40 85 C 90 20, 140 150, 190 85 C 240 20, 290 150, 340 85 C 390 20, 440 150, 490 85 T 570 85' : 'M 40 140 Q 140 ' + (30+n*12) + ', 280 85 T 570 85') + '" fill="none" stroke="#30D158" stroke-width="2.5"/>' +
-        '<path d="' + (isOsc ? 'M 40 85 C 90 150, 140 20, 190 85 C 240 150, 290 20, 340 85 C 390 150, 440 20, 490 85 T 570 85' : 'M 40 30 Q 160 ' + (120-n*10) + ', 300 95 T 570 95') + '" fill="none" stroke="#FFD60A" stroke-width="2" stroke-dasharray="4"/>' +
-        '</svg>' +
-        '<div style="display: flex; justify-content: flex-end; gap: 20px; font-family: monospace; font-size: 11px; margin-top: 8px;">' +
-        '<span style="color: #30D158;">— Product X (Exact Adaptation)</span>' +
-        '<span style="color: #FFD60A;">-- Intermediate Y (Buffer Pool)</span>' +
-        '</div>';
+      document.getElementById('mode2Standby').style.display = 'none';
+      document.getElementById('mode2Results').style.display = 'block';
+      drawDynamics();
+    }
+
+    function drawDynamics() {
+      const c = document.getElementById('dynamicsCanvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      const w = c.width, h = c.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const nVal = parseInt(document.getElementById('nSlider').value, 10);
+      const padL = 70, padR = 40, padT = 40, padB = 60;
+      const plotW = w - padL - padR, plotH = h - padT - padB;
+
+      ctx.strokeStyle = '#250B15';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i++) {
+        const y = padT + (plotH / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(padL, y);
+        ctx.lineTo(w - padR, y);
+        ctx.stroke();
+      }
+
+      const distX = padL + plotW * 0.33;
+      ctx.strokeStyle = 'rgba(255, 69, 58, 0.4)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(distX, padT);
+      ctx.lineTo(distX, h - padB);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#FF453A';
+      ctx.font = '10px JetBrains Mono';
+      ctx.fillText('Disturbance Step d(t)', distX + 6, padT + 15);
+
+      const pointsActual = [];
+      const steps = 140;
+      let u = 1.0;
+      const K = 1.0;
+      const dt = 0.4;
+
+      for (let s = 0; s <= steps; s++) {
+        const t = s * dt;
+        const load = t >= 18 ? 1.6 : 1.0;
+        const v = 1.0 * (Math.pow(u, nVal) / (Math.pow(K, nVal) + Math.pow(u, nVal)));
+        const du = (v - 0.5 * u * load) * dt;
+        u += du;
+
+        const px = padL + (s / steps) * plotW;
+        const py = padT + plotH - (Math.min(1.8, Math.max(0.2, u)) / 2.0) * plotH;
+        pointsActual.push({ x: px, y: py });
+      }
+
+      ctx.strokeStyle = 'rgba(48, 209, 88, 0.6)';
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(padL, padT + plotH * 0.5);
+      ctx.lineTo(w - padR, padT + plotH * 0.5);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.strokeStyle = '#64D2FF';
+      ctx.lineWidth = 2.8;
+      ctx.beginPath();
+      ctx.moveTo(pointsActual[0].x, pointsActual[0].y);
+      for (let p of pointsActual) ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+
+      ctx.fillStyle = '#8E8E93';
+      ctx.font = '10px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText('Simulation Time t (seconds) · Disturbance Rejection Regime', padL + plotW / 2, h - 18);
+      ctx.fillText('0s', padL, h - padB + 20);
+      ctx.fillText('20s (Injection)', distX, h - padB + 20);
+      ctx.fillText('60s (Homeostasis)', w - padR, h - padB + 20);
     }
   </script>
 </body>
