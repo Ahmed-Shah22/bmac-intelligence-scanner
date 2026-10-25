@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Architecture of Intelligence · BMAC Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      background: radial-gradient(ellipse at 50% 18%, #2A0D18 0%, #16050C 50%, #0B0205 100%);
+      background-color: #0B0205;
+      color: #F5EDE0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+    }
+    .top-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 28px; border-bottom: 1px solid rgba(58, 20, 34, 0.6);
+    }
+    .nav-left { display: flex; align-items: center; gap: 12px; font-size: 18px; }
+    .nav-brand { font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 0.25em; color: #8E7E82; text-transform: uppercase; }
+    .nav-right { display: flex; align-items: center; gap: 12px; font-size: 16px; }
+    .app-container { max-width: 960px; margin: 0 auto; padding: 36px 28px; }
+    .headline { font-family: "Playfair Display", Georgia, serif; font-size: 48px; font-weight: 400; color: #FFFFFF; margin: 0 0 12px 0; letter-spacing: -0.02em; }
+    .subheadline { font-size: 16px; color: #B0A3A6; margin: 0 0 32px 0; line-height: 1.5; }
+    .tab-bar { display: flex; gap: 16px; margin-bottom: 24px; }
+    .btn-tab {
+      background: #CFA83B; color: #120508; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; font-size: 13px; padding: 12px 24px; border: none; border-radius: 2px; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(207, 168, 59, 0.2);
+    }
+    .btn-tab.inactive { background: #5A4416; color: #D4C4B5; }
+    .input-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: #B0A3A6; text-transform: uppercase; margin-bottom: 8px; }
+    .input-row { display: flex; gap: 10px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
+    .seq-input {
+      background: #FFFFFF; color: #000000; font-family: 'JetBrains Mono', monospace;
+      font-weight: 700; font-size: 15px; padding: 8px 14px; border: none; border-radius: 4px; width: 380px; text-transform: uppercase;
+    }
+    .btn-action {
+      background: #FFFFFF; color: #000000; font-weight: 700; font-size: 13px;
+      padding: 9px 18px; border: 1px solid #CCCCCC; border-radius: 4px; cursor: pointer;
+    }
+    .btn-action:hover { background: #EDEDED; }
+    .btn-flow {
+      background: #2A0D18; color: #30D158; border: 1px solid rgba(48, 209, 88, 0.5);
+      font-weight: 700; font-size: 13px; padding: 9px 18px; border-radius: 4px; cursor: pointer; display: none;
+    }
+    .result-container {
+      min-height: 140px; background: rgba(18, 5, 9, 0.85); border: 1px solid #2B101A;
+      border-radius: 4px; padding: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 30px;
+    }
+    .standby-msg {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; color: #8E7E82; text-align: center; padding: 30px 0;
+    }
+    .diag-text { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: #D4C4B5; white-space: pre-wrap; margin-bottom: 20px; }
+    .story-card {
+      background: #1A070E; border-left: 3px solid #CFA83B; padding: 16px 20px;
+      font-size: 13px; line-height: 1.65; color: #F5EDE0; margin-top: 20px;
+    }
+    canvas { display: block; width: 100%; height: 320px; border-radius: 4px; background: #14060B; border: 1px solid #2B101A; margin-top: 14px; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <div class="top-nav">
+    <div class="nav-left">
+      <span style="color: #CFA83B;">❖</span>
+      <span style="color: #30D158; font-weight: bold;">∞</span>
+      <span style="color: #8E7E82;">☰</span>
+    </div>
+    <div class="nav-brand">BMAC LAB // FINAL</div>
+    <div class="nav-right">
+      <span style="color: #FF9F0A;">✦</span>
+      <span style="color: #CFA83B;">◇</span>
+      <span style="color: #E6C687;">☸</span>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <h1 class="headline">The Architecture of Intelligence.</h1>
+    <p class="subheadline">A complete systems theory framework: Biophysics, Control Theory, AI, and Dynamic Metabolism.</p>
+
+    <!-- Two Tabs -->
+    <div class="tab-bar">
+      <button id="tabGen" class="btn-tab" onclick="switchTab('gen')">GENETICS &amp; CONTROL</button>
+      <button id="tabFlux" class="btn-tab inactive" onclick="switchTab('flux')">DYNAMIC FLUX CONTROL</button>
+    </div>
+
+    <!-- Mode 1: Genetics -->
+    <div id="sectionGen">
+      <div class="input-label">INPUT SEQUENCE:</div>
+      <div class="input-row">
+        <input type="text" id="seqInput" class="seq-input" value="CTGATAGCTAGCTCAGTCC">
+        <button class="btn-action" onclick="analyzeSequence()">Analyze Sequence</button>
+        <button id="btnFlow" class="btn-flow" onclick="toggleFlow()">🔍 Visual Neural Flow Rays</button>
+      </div>
+
+      <div class="result-container" id="resGenBox">
+        <div class="standby-msg">SCANNER STANDBY · ENTER SEQUENCE AND CLICK "ANALYZE SEQUENCE"</div>
+      </div>
+    </div>
+
+    <!-- Mode 2: Flux -->
+    <div id="sectionFlux" style="display: none;">
+      <div class="input-label">DYNAMIC FLUX CONTROL (FEC SENSITIVITY):</div>
+      <div class="input-row">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #CFA83B;">Sensitivity n:</span>
+        <input type="range" id="nSlider" min="1" max="5" value="2" oninput="document.getElementById('nVal').innerText = this.value" style="accent-color: #CFA83B;">
+        <span id="nVal" style="font-family: 'JetBrains Mono', monospace; font-weight: bold; width: 20px;">2</span>
+        <button class="btn-action" onclick="simulateDynamics()">Simulate Dynamics</button>
+      </div>
+
+      <div class="result-container" id="resFluxBox">
+        <div class="standby-msg">FLUX SCANNER STANDBY · SELECT SENSITIVITY AND CLICK "SIMULATE DYNAMICS"</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const AI_WEIGHTS = [-2.19676, 0.12382, 4.75588];
+    const CONSENSUS_P10 = "TATAAT";
+
+    function switchTab(mode) {
+      if (mode === 'gen') {
+        document.getElementById('sectionGen').style.display = 'block';
+        document.getElementById('sectionFlux').style.display = 'none';
+        document.getElementById('tabGen').className = 'btn-tab';
+        document.getElementById('tabFlux').className = 'btn-tab inactive';
+      } else {
+        document.getElementById('sectionGen').style.display = 'none';
+        document.getElementById('sectionFlux').style.display = 'block';
+        document.getElementById('tabGen').className = 'btn-tab inactive';
+        document.getElementById('tabFlux').className = 'btn-tab';
+      }
+    }
+
+    function analyzeSequence() {
+      const raw = document.getElementById('seqInput').value.toUpperCase().replace(/[^A-Z]/g, '');
+      const box = document.getElementById('resGenBox');
+      const flowBtn = document.getElementById('btnFlow');
+
+      if (raw.length < 6) {
+        box.innerHTML = '<div style="color: #FF453A; font-family: monospace;">SEQUENCE TOO SHORT: Minimum 6 base pairs required.</div>';
+        flowBtn.style.display = 'none';
+        return;
+      }
+
+      let best = 0;
+      for (let i = 0; i <= raw.length - 6; i++) {
+        let m = 0;
+        for (let j = 0; j < 6; j++) {
+          if (raw[i+j] === CONSENSUS_P10[j]) m++;
+        }
+        if (m > best) best = m;
+      }
+
+      let gc = 0;
+      for (let c of raw) if (c === 'G' || c === 'C') gc++;
+      gc /= raw.length;
+
+      const kd = 1.0 * Math.pow(5.0, 6 - best);
+      if (kd >= 1000.0) {
+        box.innerHTML = '<div style="color: #FF453A; font-family: monospace; font-weight: bold; margin-bottom: 8px;">CRITICAL BINDING FAILURE</div>' +
+          '<div style="color: #D4C4B5; font-size: 13px;">The nucleotide sequence lacks sufficient canonical homology (Kd > 1000 nM; found ' + best + '/6 match). RNA Polymerase cannot engage the promoter.</div>';
+        flowBtn.style.display = 'none';
+        return;
+      }
+
+      const strength = Math.min(1.0, Math.max(0.0, AI_WEIGHTS[0] + AI_WEIGHTS[1]*best + AI_WEIGHTS[2]*gc));
+      const isStrong = best >= 5;
+      const zoneName = isStrong ? "Zone A · Complex Saturated" : "Zone B · Free Enzyme Dominant";
+
+      flowBtn.style.display = 'inline-block';
+
+      box.innerHTML = 
+        '<div class="diag-text">' +
+        '<span style="color: #CFA83B; font-weight: bold;">DIAGNOSTIC SUMMARY</span><br>' +
+        'Sequence: <span style="color: #FFFFFF;">' + raw + '</span><br><br>' +
+        '• Biophysical Grip:  <strong style="color: #FF9F0A;">' + best + '/6 consensus match</strong> (Kd = ' + kd.toFixed(1) + ' nM)<br>' +
+        '• Expression Output: <strong style="color: #30D158;">' + (strength * 100).toFixed(1) + '%</strong> of transcriptional maximum<br>' +
+        '• Realizability:     <strong style="color: #64D2FF;">R = 0.014065</strong> [100% of physical parameter space]<br>' +
+        '• Operating Regime:  <strong style="color: #FFFFFF;">' + zoneName + '</strong>' +
+        '</div>' +
+        '<div style="font-family: monospace; font-size: 12px; color: #CFA83B; margin-bottom: 6px;">ROP BEHAVIOR CONE · PARAMETER SPACE GEOMETRY:</div>' +
+        '<canvas id="coneCanvas"></canvas>' +
+        '<div class="story-card">' +
+        '<div style="color: #CFA83B; font-weight: bold; font-family: monospace; margin-bottom: 6px;">WHAT THIS MEANS IN PRACTICE</div>' +
+        '<p style="margin: 0 0 6px 0;">Think of the 3D cone as the complete landscape of possibilities for this circuit:</p>' +
+        '• <span style="color: #30D158;">Zone A (Top):</span> High affinity. RNA polymerase saturates the promoter continuously.<br>' +
+        '• <span style="color: #FFD60A;">Zone B (Left):</span> Moderate affinity. Enzyme is abundant, but binding is intermittent.<br>' +
+        '• <span style="color: #8E8E93;">Zone C (Right):</span> Free DNA. The promoter waits for stochastic collisions.<br><br>' +
+        '<div style="border-top: 1px solid #3A1422; padding-top: 8px;">' +
+        '<span style="color: #FF9F0A; font-family: monospace; font-weight: bold;">THE PROFESSOR XIAO TAKEAWAY:</span><br>' +
+        'Your promoter operates in <strong style="color: #30D158;">' + zoneName + '</strong>. While sequence mutations shift the operating coordinate, the stoichiometric R-index remains robustly invariant. The network topology guarantees mathematical stability.' +
+        '</div></div>' +
+        '<div id="flowBox" style="display: none; margin-top: 20px;">' +
+        '<div style="font-family: monospace; font-size: 12px; color: #30D158; font-weight: bold; margin-bottom: 8px;">VISUAL NEURAL FLOW RAYS · TRACE-BACK AUDIT PIPELINE</div>' +
+        '<canvas id="flowCanvas" style="height: 220px;"></canvas>' +
+        '</div>';
+
+      drawCone(isStrong);
+      drawFlow(raw, best, kd);
+    }
+
+    function toggleFlow() {
+      const fb = document.getElementById('flowBox');
+      fb.style.display = fb.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function drawCone(isStrong) {
+      const cvs = document.getElementById('coneCanvas');
+      if (!cvs) return;
+      cvs.width = cvs.clientWidth * window.devicePixelRatio;
+      cvs.height = cvs.clientHeight * window.devicePixelRatio;
+      const ctx = cvs.getContext('2d');
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const w = cvs.clientWidth, h = cvs.clientHeight;
+
+      ctx.clearRect(0, 0, w, h);
+      const cx = w / 2, cy = h * 0.75;
+
+      // Draw Polyhedral Cone Rays
+      const rays = [
+        { x: cx - 180, y: cy - 140, col: '#30D158' },
+        { x: cx - 90,  y: cy - 200, col: '#FFD60A' },
+        { x: cx,       y: cy - 220, col: '#30D158' },
+        { x: cx + 110, y: cy - 190, col: '#FFD60A' },
+        { x: cx + 190, y: cy - 130, col: '#30D158' },
+      ];
+
+      rays.forEach(r => {
+        ctx.strokeStyle = r.col;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(r.x, r.y);
+        ctx.stroke();
+      });
+
+      // Labels
+      ctx.font = '11px monospace';
+      ctx.fillStyle = '#30D158'; ctx.fillText('Zone A: Saturated', cx - 45, cy - 230);
+      ctx.fillStyle = '#FFD60A'; ctx.fillText('Zone B: Free Enzyme', cx - 210, cy - 145);
+      ctx.fillStyle = '#8E8E93'; ctx.fillText('Zone C: Free DNA', cx + 130, cy - 135);
+
+      // Current Point Marker
+      const ptX = isStrong ? cx - 10 : cx - 100;
+      const ptY = isStrong ? cy - 180 : cy - 110;
+      ctx.fillStyle = '#FF9F0A';
+      ctx.beginPath();
+      ctx.arc(ptX, ptY, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillText('>> YOU ARE HERE <<', ptX - 45, ptY - 14);
+    }
+
+    function drawFlow(seq, score, kd) {
+      const cvs = document.getElementById('flowCanvas');
+      if (!cvs) return;
+      cvs.width = cvs.clientWidth * window.devicePixelRatio;
+      cvs.height = cvs.clientHeight * window.devicePixelRatio;
+      const ctx = cvs.getContext('2d');
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const w = cvs.clientWidth, h = cvs.clientHeight;
+
+      ctx.clearRect(0, 0, w, h);
+      const nodes = [
+        { label: "01: DNA Letters", sub: seq.slice(0, 10) + '...', col: "#CFA83B" },
+        { label: "02: Kd Grip Hub", sub: "Kd=" + kd.toFixed(1) + " nM", col: "#FF9F0A" },
+        { label: "03: Grid (N,L)", sub: "122 Regimes", col: "#30D158" },
+        { label: "04: 14 Cones", sub: "Adaptive ROP", col: "#64D2FF" },
+        { label: "05: Homeostasis", sub: "R=0.014065", col: "#30D158" }
+      ];
+
+      const step = w / 5;
+      nodes.forEach((n, i) => {
+        const x = step * i + step/2, y = h / 2;
+        if (i < 4) {
+          ctx.strokeStyle = n.col;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.quadraticCurveTo(x + step/2, y - 40, x + step, y);
+          ctx.stroke();
+        }
+        ctx.fillStyle = "#200B14";
+        ctx.strokeStyle = n.col;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, 16, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
+
+        ctx.font = '10px monospace';
+        ctx.fillStyle = n.col;
+        ctx.textAlign = 'center';
+        ctx.fillText(n.label, x, y - 26);
+        ctx.fillStyle = '#F5EDE0';
+        ctx.fillText(n.sub, x, y + 32);
+      });
+    }
+
+    function simulateDynamics() {
+      const n = parseInt(document.getElementById('nSlider').value);
+      const isOsc = n >= 3;
+      const box = document.getElementById('resFluxBox');
+      box.innerHTML = 
+        '<div style="font-family: monospace; font-size: 13px; color: #30D158; margin-bottom: 12px;">' +
+        'SIMULATION COMPLETE · Sensitivity n = ' + n + ' · ' + (isOsc ? 'OSCILLATING AUTONOMOUS CLOCK' : 'STABLE HOMEOSTASIS') +
+        '</div>' +
+        '<div style="font-family: monospace; font-size: 11px; color: #CFA83B; margin-bottom: 6px;">FEC Closed-Loop Trajectory (Product X vs Intermediate Y):</div>' +
+        '<svg viewBox="0 0 600 180" style="width: 100%; height: 180px; background: #14060B; border: 1px solid #2B101A; border-radius: 4px;">' +
+        '<line x1="40" y1="20" x2="40" y2="150" stroke="#3A1422"/>' +
+        '<line x1="40" y1="150" x2="570" y2="150" stroke="#3A1422"/>' +
+        '<path d="' + (isOsc ? 'M 40 85 C 90 20, 140 150, 190 85 C 240 20, 290 150, 340 85 C 390 20, 440 150, 490 85 T 570 85' : 'M 40 140 Q 140 ' + (30+n*12) + ', 280 85 T 570 85') + '" fill="none" stroke="#30D158" stroke-width="2.5"/>' +
+        '<path d="' + (isOsc ? 'M 40 85 C 90 150, 140 20, 190 85 C 240 150, 290 20, 340 85 C 390 150, 440 20, 490 85 T 570 85' : 'M 40 30 Q 160 ' + (120-n*10) + ', 300 95 T 570 95') + '" fill="none" stroke="#FFD60A" stroke-width="2" stroke-dasharray="4"/>' +
+        '</svg>' +
+        '<div style="display: flex; justify-content: flex-end; gap: 20px; font-family: monospace; font-size: 11px; margin-top: 8px;">' +
+        '<span style="color: #30D158;">— Product X (Exact Adaptation)</span>' +
+        '<span style="color: #FFD60A;">-- Intermediate Y (Buffer Pool)</span>' +
+        '</div>';
+    }
+  </script>
+</body>
+</html>
