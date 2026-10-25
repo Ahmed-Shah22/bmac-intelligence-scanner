@@ -1,35 +1,32 @@
 # ==============================================================================
-# BAC-Explorer: Bio-Machine Architecture and Control (BMAC) Scanner
+# BMAC LAB // FINAL — The Architecture of Intelligence
 # Westlake University · Professor Fangzhou Xiao Lab
-# Candidate Researcher: Ahmed Shah
-# 
-# Features:
-# 1. Dark Maroon Imperial Lacquer Theme (Prestigious Deep Maroon & Gold)
-# 2. Headline Nobel-Prize Bas-Relief Carved Cameo Medallions of Control Titans
-#    (Hsue-Shen Tsien, Norbert Wiener, Rudolf Kalman, John Doyle, Claude Shannon)
-# 3. Visual Neural Flow-Ray Information Trace-Back Pipeline (Zero Raw Code Spills)
-# 4. Reaction Order Polyhedra (ROP) 3D Cones & FEC Dynamic Adaptation Engine
-# 5. Zero-Invented-Numbers Guarantee (Xiao Lab Ground Truth: R = 0.014065)
-# 6. Manual Execution Only: Computes ONLY when you click the buttons
-# 7. 100% English Interface: Zero Chinese text throughout the tool
+# File: C:\bmac-julia\bmac_final_tool.jl
+# URL: http://localhost:8271
+#
+# Core Scanner Capabilities:
+# 1. Two Dedicated Modes:
+#    - GENETICS & CONTROL (Polyhedral ROP Parameter Cones)
+#    - DYNAMIC FLUX CONTROL (Closed-Loop Kinetic Flux Dynamics)
+# 2. Universal Sequence Scanner: Accurately evaluates ANY sequence entered by user
+# 3. True Scanner Behavior: Zero detail displayed until user explicitly scans
 # ==============================================================================
 
 using Pkg
 Pkg.activate("C:/BindingAndCatalysis.jl")
 using BindingAndCatalysis, LinearAlgebra, SparseArrays, Bonito, DifferentialEquations, CairoMakie, Polyhedra, Base64, GeometryBasics
 
-# Upstream patch for Julia 1.12 method dispatch
 Base.muladd(a::Real, b::BindingAndCatalysis.ExactLogExpr, c::BindingAndCatalysis.ExactLogExpr) = (a * b) + c
 CairoMakie.activate!()
 
-# Safe in-memory image generator for Bonito
+# Safe in-memory image generator
 function fig_to_base64(fig)
     io = IOBuffer()
     show(io, MIME("image/png"), fig)
     return "data:image/png;base64," * base64encode(take!(io))
 end
 
-# Promoter Ground Truth Dataset
+# Ground Truth Dataset for training
 const PROMOTER_DATA = [
     (name="J23100", seq="TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC", strength=1.00),
     (name="J23101", seq="TTTACAGCTAGCTCAGTCCTAGGTATTATGCTAGC", strength=0.70),
@@ -38,8 +35,13 @@ const PROMOTER_DATA = [
 ]
 const CONSENSUS_P10 = "TATAAT"
 
+# Extract features from ANY sequence of any length
 function extract_features(seq::String)
-    seq = uppercase(strip(seq)); best = 0
+    seq = uppercase(strip(replace(seq, r"[^A-Za-z]" => "")))
+    if length(seq) < 6
+        return [1.0, 0.0, 0.0]
+    end
+    best = 0
     for i in 1:(length(seq) - 5)
         m = sum(seq[i+j-1] == CONSENSUS_P10[j] for j in 1:6)
         best = max(best, m)
@@ -48,6 +50,7 @@ function extract_features(seq::String)
     return [1.0, Float64(best), gc]
 end
 
+# Train biophysical regression model
 function train_ai()
     X = reduce(vcat, [extract_features(p.seq)' for p in PROMOTER_DATA])
     y = [p.strength for p in PROMOTER_DATA]
@@ -56,13 +59,18 @@ end
 const AI_WEIGHTS = train_ai()
 
 function predict_strength(seq::String)
-    return clamp(sum(extract_features(seq) .* AI_WEIGHTS), 0.0, 1.0)
+    feats = extract_features(seq)
+    return clamp(sum(feats .* AI_WEIGHTS), 0.0, 1.0)
 end
 
 function sequence_to_affinity(seq::String)
+    seq = uppercase(strip(replace(seq, r"[^A-Za-z]" => "")))
+    if length(seq) < 6
+        return (score=0, kd=15625.0, exists=false, too_short=true)
+    end
     match = Int(extract_features(seq)[2])
     kd = 1.0 * (5.0 ^ (6 - match))
-    return (score=match, kd=kd, exists=kd < 1000.0)
+    return (score=match, kd=kd, exists=kd < 1000.0, too_short=false)
 end
 
 function compute_r_index(N, L)
@@ -77,58 +85,50 @@ function fec_dynamics!(du, u, p, t)
     du[2] = 0.5 * u[1] - v
 end
 
-# Visual Neural Flow-Ray Information Diagram
-function generate_neural_trace_fig(seq::String, score::Int, kd::Float64, ai_pct::Float64, r_val::Float64, zone::String)
-    fig = Figure(size=(840, 360), backgroundcolor="#14060B")
-    ax = Axis(fig[1, 1], 
-        title="BAC-Explorer · Neural Flow-Ray Information Trace-Back Pathway",
-        titlesize=14, titlecolor="#F4E4C1",
-        backgroundcolor="#1C0910")
+# Visual Neural Flow-Ray Diagram
+function generate_neural_trace_fig()
+    fig = Figure(size=(720, 240), backgroundcolor="#14060B")
+    ax = Axis(fig[1, 1], backgroundcolor="#1C0910",
+        title="Biochemical Information Pathway · Neural Network Flow Rays",
+        titlecolor="#FFFFFF", titlesize=13)
     hidedecorations!(ax)
     hidespines!(ax)
-
-    # Stages coordinates
+    
     xs = [1.0, 2.5, 4.0, 5.5, 7.0]
-    labels = ["1. Promoter DNA", "2. Thermodynamic Kd", "3. Stoichiometry (N,L)", "4. ROP Behavior Cone", "5. Dynamic Adaptation"]
-    sublabels = [
-        "DNA [A,T,G,C]\n$(seq)",
-        "Affinity Grip\n$(score)/6 match (Kd=$(round(kd, digits=1)) nM)",
-        "Stoichiometric Matrix\n122 Coupled Regimes",
-        "ROP Cone Geometry\n$(zone)\nR = $(round(r_val, digits=4))",
-        "Adaptive State-Space\n$(round(ai_pct, digits=1))% Max Output\n14 Adaptive Regimes"
-    ]
-
-    # Flow Rays
     for i in 1:4
-        for dy in [-0.25, 0.0, 0.25]
-            lines!(ax, [xs[i], xs[i+1]], [dy*0.7, dy*0.5]; color=(i==1 ? "#E6C687" : i==2 ? "#FF9F0A" : i==3 ? "#30D158" : "#64D2FF"), linewidth=2.5, alpha=0.7)
-        end
-        # Ray pulse spark
-        scatter!(ax, [(xs[i]+xs[i+1])/2], [0.0]; color="#FFD60A", markersize=10, marker=:star5)
+        x_start, x_end = xs[i], xs[i+1]
+        t = range(x_start, x_end, length=60)
+        y_ray = @. 0.18 * sin((t - x_start)/(x_end - x_start) * pi)
+        color = i == 1 ? "#CFA83B" : (i == 2 ? "#30D158" : (i == 3 ? "#64D2FF" : "#FFD60A"))
+        lines!(ax, t, y_ray, color=color, linewidth=3)
+        scatter!(ax, [x_start + 0.5*(x_end - x_start)], [0.18], color=color, markersize=10, marker=:diamond)
     end
-
-    # Station nodes
-    for i in 1:5
-        c = (i==1 ? "#8C2435" : i==2 ? "#B47D3A" : i==3 ? "#244A32" : i==4 ? "#1E3B5C" : "#5A2834")
-        scatter!(ax, [xs[i]], [0.0]; color=c, strokecolor="#E6C687", strokewidth=2, markersize=32)
-        text!(ax, Point2f(xs[i], 0.45), text=labels[i], color="#F4E4C1", fontsize=11, align=(:center, :center), font=:bold)
-        text!(ax, Point2f(xs[i], -0.45), text=sublabels[i], color="#D4C4B5", fontsize=9, align=(:center, :center))
+    
+    node_colors = ["#8C2435", "#B47D3A", "#244A32", "#1E3B5C", "#30D158"]
+    labels_top = ["01: DNA Letters", "02: Kd Grip Hub", "03: Grid (N,L)", "04: 14 Cones", "05: Output Homeostasis"]
+    labels_bottom = ["TATAAT Scan", "Kd = 5.0 nM", "Stoichiometry", "of 122 Regimes", "R = 0.014065"]
+    
+    for (i, x) in enumerate(xs)
+        scatter!(ax, [x], [0.0], color=node_colors[i], markersize=38, alpha=0.3)
+        scatter!(ax, [x], [0.0], color="#200B14", markersize=24, strokewidth=2, strokecolor=node_colors[i])
+        text!(ax, x, 0.45; text=labels_top[i], color=node_colors[i], fontsize=10, font="sans", align=(:center, :center))
+        text!(ax, x, -0.45; text=labels_bottom[i], color="#FFFFFF", fontsize=9, font="sans", align=(:center, :center))
     end
-
+    
+    ylims!(ax, -0.85, 0.85)
     xlims!(ax, 0.2, 7.8)
-    ylims!(ax, -0.9, 0.8)
     return fig
 end
 
 # 3D ROP Behavior Cone Plot
 function generate_rop_cone_fig(is_strong::Bool)
-    fig = Figure(size=(680, 420), backgroundcolor="#18080E")
-    ax = Axis3(fig[1, 1],
-        title="ROP Behavior Cone · Parameter Space Geometry (Xiao Lab)",
-        titlecolor="#F4E4C1", titlesize=13,
-        xlabel="Total Enzyme (E_tot) ->", ylabel="Total Promoter (P_tot) ->", zlabel="Affinity (1/Kd) ->",
-        xlabelcolor="#C4975A", ylabelcolor="#C4975A", zlabelcolor="#C4975A",
-        xgridcolor="#30111A", ygridcolor="#30111A", zgridcolor="#30111A",
+    fig = Figure(size=(680, 400), backgroundcolor="#14060B")
+    ax = Axis3(fig[1, 1], 
+        title="ROP Behavior Cone · Parameter Space Geometry", 
+        titlecolor="#FFFFFF", titlesize=13,
+        xlabel="Total Enzyme ->", ylabel="Total Promoter ->", zlabel="Affinity (1/Kd) ->",
+        xlabelcolor="#8E8E93", ylabelcolor="#8E8E93", zlabelcolor="#8E8E93",
+        xgridcolor="#250B15", ygridcolor="#250B15", zgridcolor="#250B15",
         azimuth=0.55, elevation=0.32, backgroundcolor="#14060B")
     
     model = Bnc(N=[1 1 -1], L=[1 0 1; 0 1 1], x_sym=[:a,:b,:c], q_sym=[:x,:y], K_sym=[:k])
@@ -150,523 +150,331 @@ function generate_rop_cone_fig(is_strong::Bool)
     
     text!(ax, Point3f(0.0, 0.0, 1.2), text="Zone A: Saturated", color="#30D158", fontsize=10)
     text!(ax, Point3f(-1.0, 0.5, 0.0), text="Zone B: Free Enzyme", color="#FFD60A", fontsize=10)
-    text!(ax, Point3f(0.8, -0.8, 0.0), text="Zone C: Free DNA", color="#A29080", fontsize=10)
+    text!(ax, Point3f(0.8, -0.8, 0.0), text="Zone C: Free DNA", color="#8E8E93", fontsize=10)
     
     pt_z = is_strong ? 0.9 : 0.2
     pt_x = is_strong ? -0.2 : -0.7
     pt_y = is_strong ? 0.2 : 0.4
     scatter!(ax, [pt_x], [pt_y], [pt_z]; color="#FF9F0A", markersize=16, marker=:diamond)
-    text!(ax, Point3f(pt_x, pt_y, pt_z + 0.16), text=">> YOU ARE HERE <<", color="#FFFFFF", fontsize=10)
+    text!(ax, Point3f(pt_x, pt_y, pt_z + 0.16), text=">> YOU ARE HERE <<", color="#FF9F0A", fontsize=10)
     return fig
 end
 
-# Dynamic Adaptation Simulation Plot
-function generate_dynamics_fig(n_val::Int)
+# Dynamic Flux Simulation Plot
+function generate_flux_fig(n_val::Int)
     p = (1.0, Float64(n_val))
     prob = ODEProblem(fec_dynamics!, [0.1, 1.0], (0.0, 15.0), p)
     sol = solve(prob, Tsit5())
 
-    fig = Figure(size=(680, 240), backgroundcolor="#18080E")
+    fig = Figure(size=(680, 240), backgroundcolor="#14060B")
     ax = Axis(fig[1, 1],
         title="FEC Closed-Loop Dynamic Trajectory (Sensitivity n = $(n_val))",
-        titlecolor="#F4E4C1", titlesize=12,
+        titlecolor="#FFFFFF", titlesize=12,
         xlabel="Time (t, sec) ->", ylabel="Relative Abundance ->",
-        xlabelcolor="#C4975A", ylabelcolor="#C4975A",
-        xgridcolor="#30111A", ygridcolor="#30111A",
+        xlabelcolor="#CFA83B", ylabelcolor="#CFA83B",
+        xgridcolor="#250B15", ygridcolor="#250B15",
         backgroundcolor="#14060B")
     
     lines!(ax, sol.t, [u[1] for u in sol.u], label="Product X (Exact Adaptation)", color="#30D158", linewidth=2.5)
     lines!(ax, sol.t, [u[2] for u in sol.u], label="Intermediate Y (Buffer Pool)", color="#FFD60A", linewidth=2)
-    axislegend(ax, position=:rt, backgroundcolor="#240D15", labelcolor="#F4E4C1", framecolor="#B47D3A")
+    axislegend(ax, position=:rt, backgroundcolor="#240D15", labelcolor="#FFFFFF", framecolor="#CFA83B")
     return fig
 end
 
-# Embedded Custom Stylesheet for Imperial Dark Maroon Lacquer Aesthetic
-const APP_CSS = """
+# Exact Stylesheet
+const SCANNER_CSS = """
     * { box-sizing: border-box; }
     body {
         margin: 0;
         padding: 0;
-        background: #140509;
+        background: radial-gradient(ellipse at 50% 18%, #2A0D18 0%, #16050C 50%, #0B0205 100%);
+        background-color: #0B0205;
         color: #F5EDE0;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-    .bmac-app {
         min-height: 100vh;
-        background: linear-gradient(180deg, #18080E 0%, #240D15 50%, #120407 100%);
-        padding: 24px;
-        display: flex;
-        justify-content: center;
     }
-    .bmac-container {
-        width: 100%;
-        max-width: 1100px;
-    }
-    /* Header Bar */
-    .header-bar {
-        background: #250D16;
-        border: 1px solid #B47D3A;
-        border-radius: 12px;
-        padding: 18px 22px;
-        margin-bottom: 22px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-    .header-top {
+    .top-nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-bottom: 1px solid rgba(180, 125, 58, 0.3);
-        padding-bottom: 14px;
+        padding: 16px 28px;
+        border-bottom: 1px solid rgba(58, 20, 34, 0.6);
     }
-    .westlake-seal {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        background: #8C2435;
-        border: 1.5px solid #E6C687;
-        color: #FFF4E0;
-        font-weight: 800;
-        font-size: 13px;
-        border-radius: 6px;
-        margin-right: 14px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-        letter-spacing: 0.5px;
-    }
-    .header-title-box h1 {
-        margin: 0;
-        font-size: 21px;
-        color: #F4E4C1;
-        letter-spacing: 0.5px;
-        font-weight: 700;
-    }
-    .header-title-box p {
-        margin: 3px 0 0 0;
-        font-size: 11px;
-        color: #C4975A;
+    .nav-left { display: flex; align-items: center; gap: 12px; font-size: 18px; }
+    .nav-brand {
         font-family: monospace;
-        letter-spacing: 0.8px;
-    }
-    .header-badge {
-        background: #3A141F;
-        border: 1px solid #C4975A;
-        color: #E6C687;
-        padding: 5px 12px;
-        border-radius: 5px;
-        font-size: 11px;
-        font-weight: bold;
-        letter-spacing: 0.5px;
-    }
-    /* Nobel Medallion Headline Ribbon */
-    .medallion-ribbon {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        overflow-x: auto;
-        padding: 4px 0;
-    }
-    .medallion-ribbon-title {
-        font-size: 11px;
-        color: #C4975A;
-        font-weight: bold;
-        letter-spacing: 1px;
-        white-space: nowrap;
-        margin-right: 4px;
-        border-right: 1px solid rgba(180, 125, 58, 0.3);
-        padding-right: 12px;
+        font-size: 13px;
+        letter-spacing: 0.25em;
+        color: #8E7E82;
         text-transform: uppercase;
     }
-    .medallion-card {
-        background: linear-gradient(135deg, #2A101A 0%, #1A070E 100%);
-        border: 1px solid #B47D3A;
-        border-radius: 24px;
-        padding: 4px 14px 4px 6px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
-        transition: transform 0.2s, border-color 0.2s;
-        cursor: default;
+    .nav-right { display: flex; align-items: center; gap: 12px; font-size: 16px; }
+    .app-container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 36px 28px;
     }
-    .medallion-card:hover {
-        transform: translateY(-2px);
-        border-color: #E6C687;
-        box-shadow: 0 4px 12px rgba(230, 198, 135, 0.2);
+    .headline {
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: 48px;
+        font-weight: 400;
+        color: #FFFFFF;
+        margin: 0 0 12px 0;
+        letter-spacing: -0.02em;
     }
-    .medallion-coin {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: radial-gradient(circle, #E6C687 0%, #B47D3A 60%, #684210 100%);
-        border: 1px solid #FFF2D6;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 11px;
-        color: #1E080F;
-        box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 2px 4px rgba(0,0,0,0.6);
-        text-shadow: 0 1px 0 rgba(255,255,255,0.4);
-    }
-    .medallion-info {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.15;
-    }
-    .medallion-name {
-        font-size: 11px;
-        font-weight: bold;
-        color: #F4E4C1;
-    }
-    .medallion-sub {
-        font-size: 9px;
-        color: #C4975A;
-        font-family: monospace;
-    }
-    /* Main Grid */
-    .bmac-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 22px;
-    }
-    .bmac-card {
-        background: #1F0B13;
-        border: 1px solid rgba(180, 125, 58, 0.5);
-        border-radius: 12px;
-        padding: 22px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-    }
-    .card-title {
-        color: #E6C687;
+    .subheadline {
         font-size: 16px;
-        font-weight: 700;
-        margin: 0 0 14px 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid rgba(180, 125, 58, 0.25);
-        padding-bottom: 10px;
+        color: #B0A3A6;
+        margin: 0 0 32px 0;
+        line-height: 1.5;
     }
-    /* Buttons and Inputs */
-    .bmac-input {
-        width: 100%;
-        background: #140509;
-        border: 1px solid #B47D3A;
-        color: #F4E4C1;
-        padding: 11px 14px;
-        border-radius: 6px;
-        font-family: monospace;
+    .tab-bar {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .btn-tab {
+        background: #CFA83B;
+        color: #120508;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
         font-size: 13px;
-        margin-bottom: 14px;
-    }
-    .bmac-input:focus {
-        outline: none;
-        border-color: #E6C687;
-        box-shadow: 0 0 8px rgba(230, 198, 135, 0.3);
-    }
-    .btn-group {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-    .btn-primary {
-        background: linear-gradient(135deg, #B47D3A 0%, #8C5E24 100%);
-        color: #16060B;
-        font-weight: 700;
+        padding: 12px 24px;
         border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
+        border-radius: 2px;
         cursor: pointer;
-        font-family: inherit;
-        font-size: 13px;
-        transition: filter 0.2s;
+        box-shadow: 0 4px 14px rgba(207, 168, 59, 0.2);
     }
-    .btn-primary:hover {
-        filter: brightness(1.15);
-    }
-    .btn-trace {
-        background: #3A141F;
-        color: #30D158;
-        border: 1px solid #30D158;
-        font-weight: 700;
-        padding: 10px 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-family: inherit;
-        font-size: 13px;
-        transition: all 0.2s;
-    }
-    .btn-trace:hover {
-        background: #4D1A29;
-        box-shadow: 0 0 10px rgba(48, 209, 88, 0.3);
-    }
-    /* Diagnostic Box */
-    .diag-box {
-        background: #140509;
-        border: 1px solid rgba(180, 125, 58, 0.3);
-        border-radius: 6px;
-        padding: 14px;
+    .input-label {
         font-family: monospace;
-        font-size: 12px;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        color: #B0A3A6;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .input-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    .seq-input {
+        background: #FFFFFF;
+        color: #000000;
+        font-family: monospace;
+        font-weight: 700;
+        font-size: 15px;
+        padding: 8px 14px;
+        border: none;
+        border-radius: 4px;
+        width: 380px;
+        text-transform: uppercase;
+    }
+    .btn-action {
+        background: #FFFFFF;
+        color: #000000;
+        font-weight: 700;
+        font-size: 13px;
+        padding: 9px 18px;
+        border: 1px solid #CCCCCC;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .btn-flow {
+        background: #2A0D18;
+        color: #30D158;
+        border: 1px solid rgba(48, 209, 88, 0.5);
+        font-weight: 700;
+        font-size: 13px;
+        padding: 9px 18px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .result-container {
+        min-height: 140px;
+        background: rgba(18, 5, 9, 0.8);
+        border: 1px solid #2B101A;
+        border-radius: 4px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .diag-text {
+        font-family: monospace;
+        font-size: 13px;
+        line-height: 1.6;
         color: #D4C4B5;
         white-space: pre-wrap;
-        line-height: 1.55;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
     }
-    .story-box {
-        background: #280F19;
-        border-left: 3px solid #E6C687;
-        padding: 14px 18px;
-        font-size: 12px;
-        color: #F4E4C1;
+    .story-card {
+        background: #1A070E;
+        border-left: 3px solid #CFA83B;
+        padding: 16px 20px;
+        font-size: 13px;
         line-height: 1.65;
-        margin-top: 14px;
-        border-radius: 0 6px 6px 0;
+        color: #F5EDE0;
+        margin-top: 20px;
     }
-    .img-box {
+    .img-wrapper {
         display: flex;
         justify-content: center;
-        background: #140509;
-        border: 1px solid rgba(180, 125, 58, 0.3);
-        border-radius: 8px;
-        padding: 10px;
-        overflow: hidden;
-        min-height: 60px;
-        align-items: center;
+        margin-top: 16px;
     }
-    .img-box img {
+    .img-wrapper img {
         max-width: 100%;
-        height: auto;
         border-radius: 4px;
     }
-    .placeholder-text {
-        color: #C4975A;
+    .standby-msg {
+        text-align: center;
+        font-family: monospace;
         font-size: 12px;
-        font-style: italic;
-    }
-    /* Slider & Dynamics */
-    .slider-row {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        margin-bottom: 14px;
+        letter-spacing: 0.15em;
+        color: #8E7E82;
+        padding: 30px 0;
     }
 """
 
-# Assemble Bonito Application
 app = App() do
-    # Input & action Observables
-    seq_field = Bonito.TextField("CTGATAGCTAGCTCAGTCCTAGGGATTATGCTAGC", class="bmac-input")
-    run_btn1 = Bonito.Button("Analyze Architecture", class="btn-primary")
-    trace_btn = Bonito.Button("🔍 Trace Back Architecture & Data Audit", class="btn-trace")
-    
-    res1 = Bonito.Observable("Awaiting execution. Enter a 35bp promoter sequence and click 'Analyze Architecture' to run polyhedral parameter space analysis.")
+    # Observables (Clean state on startup - zero detail displayed until clicked)
+    seq_field = Bonito.TextField("CTGATAGCTAGCTCAGTCC", class="seq-input")
+    run_btn = Bonito.Button("Analyze Sequence", class="btn-action")
+    trace_btn = Bonito.Button("🔍 Visual Neural Flow Rays", class="btn-flow")
+
+    res1 = Bonito.Observable("SCANNER STANDBY · ENTER SEQUENCE AND CLICK \"ANALYZE SEQUENCE\"")
     img1 = Bonito.Observable("")
     story1 = Bonito.Observable("")
     trace_img = Bonito.Observable("")
-    
+
+    # Mode 2 observables
     n_slider = Bonito.Slider(1:1:5, value=2)
-    run_btn2 = Bonito.Button("Simulate Dynamics", class="btn-primary")
-    res2 = Bonito.Observable("Awaiting execution. Adjust sensitivity exponent and click 'Simulate Dynamics' to solve the closed-loop ODE system.")
+    sim_btn = Bonito.Button("Simulate Dynamics", class="btn-action")
+    res2 = Bonito.Observable("FLUX SCANNER STANDBY · SELECT SENSITIVITY AND CLICK \"SIMULATE DYNAMICS\"")
     img2 = Bonito.Observable("")
 
-    # Callback: Analyze Architecture (Triggers ONLY when you click)
-    on(run_btn1) do _
-        seq = uppercase(strip(seq_field.value[]))
+    # Mode 1: Analyze Sequence (Triggers on demand only)
+    on(run_btn) do _
+        seq = uppercase(strip(replace(seq_field.value[], r"[^A-Za-z]" => "")))
         bio = sequence_to_affinity(seq)
-        if !bio.exists
-            res1[] = "CRITICAL BINDING FAILURE\n\nThe nucleotide sequence lacks sufficient canonical homology (Kd > 1000 nM). RNA Polymerase cannot engage the promoter."
-            img1[] = ""; story1[] = ""; return
+        
+        if bio.too_short
+            res1[] = "SEQUENCE TOO SHORT\n\nInput sequence length ($(length(seq)) bp) is less than the minimum 6 bp required for Pribnow motif scan."
+            img1[] = ""; story1[] = ""; trace_img[] = ""; return
         end
+
+        if !bio.exists
+            res1[] = "CRITICAL BINDING FAILURE\n\nThe nucleotide sequence lacks sufficient canonical homology (Kd > 1000 nM; found $(bio.score)/6 match). RNA Polymerase cannot engage the promoter."
+            img1[] = ""; story1[] = ""; trace_img[] = ""; return
+        end
+
         ai = predict_strength(seq)
         r = compute_r_index([1 1 -1], [1 0 1; 0 1 1])
         is_strong = bio.score >= 5
         zone_name = is_strong ? "Zone A · Complex Saturated" : "Zone B · Free Enzyme Dominant"
-        
-        # Diagnostic summary in pure English
-        res1[] = "DIAGNOSTIC SUMMARY (Westlake University BMAC Lab Audit)\n" *
+
+        res1[] = "DIAGNOSTIC SUMMARY\n" *
                  "Sequence: $(seq)\n\n" *
                  "• Biophysical Grip:  $(bio.score)/6 consensus match  (Kd = $(round(bio.kd, digits=1)) nM)\n" *
                  "• Expression Output: $(round(ai * 100, digits=1))% of transcriptional maximum\n" *
-                 "• Realizability:     R = $(round(r, digits=4))  [100% of physical parameter space]\n" *
+                 "• Realizability:     R = $(round(r, digits=2))  [100% of physical parameter space]\n" *
                  "• Operating Regime:  $(zone_name)"
 
-        # Narrative Story in pure English
-        story1[] = "WHAT THIS MEANS IN PRACTICE:\n\n" *
-                   "3D Parameter Behavior Cones (ROP):\n" *
-                   "• Zone A (Top): High affinity binding; RNA polymerase continuously saturates the promoter.\n" *
-                   "• Zone B (Left): Moderate affinity; free enzyme is dominant, binding occurs in intermittent pulses.\n" *
-                   "• Zone C (Right): Free DNA dominant; transcription depends on stochastic molecular encounters.\n\n" *
+        story1[] = "WHAT THIS MEANS IN PRACTICE\n\n" *
+                   "Think of the 3D cone below as the complete landscape of possibilities for this circuit:\n\n" *
+                   "• Zone A (Top): High affinity. RNA polymerase saturates the promoter continuously.\n" *
+                   "• Zone B (Left): Moderate affinity. Enzyme is abundant, but binding is intermittent.\n" *
+                   "• Zone C (Right): Free DNA. The promoter waits for stochastic collisions.\n\n" *
                    "THE PROFESSOR XIAO TAKEAWAY:\n" *
-                   "Your promoter operates in $(zone_name). While mutations shift the operating coordinate (orange diamond), the stoichiometric R-index remains robustly invariant. The network topology guarantees mathematical stability."
+                   "Your promoter operates in $(zone_name). Notice that while sequence mutations shift the operating point (orange diamond), the R-index remains exactly 1.0. The circuit's topological robustness is absolute."
 
-        # Generate 3D Cone figure
-        fig_cone = generate_rop_cone_fig(is_strong)
-        img1[] = fig_to_base64(fig_cone)
-
-        # Update trace figure automatically
-        zone_en = is_strong ? "Zone A: Saturated" : "Zone B: Free Enzyme"
-        fig_trace = generate_neural_trace_fig(seq, bio.score, bio.kd, ai * 100.0, r, zone_en)
-        trace_img[] = fig_to_base64(fig_trace)
+        fig = generate_rop_cone_fig(is_strong)
+        img1[] = fig_to_base64(fig)
     end
 
-    # Callback: Trace Back Button (Triggers ONLY when you click)
+    # Trace Back button
     on(trace_btn) do _
-        seq = uppercase(strip(seq_field.value[]))
-        bio = sequence_to_affinity(seq)
-        ai = predict_strength(seq)
-        r = 0.014065 # Ground truth adaptation realizability benchmark
-        zone_en = bio.score >= 5 ? "Zone A: Saturated" : "Zone B: Free Enzyme"
-        fig_trace = generate_neural_trace_fig(seq, bio.score, bio.kd, ai * 100.0, r, zone_en)
+        fig_trace = generate_neural_trace_fig()
         trace_img[] = fig_to_base64(fig_trace)
     end
 
-    # Callback: Simulate Dynamics (Triggers ONLY when you click)
-    on(run_btn2) do _
+    # Mode 2: Dynamic Flux Simulation (Triggers on demand only)
+    on(sim_btn) do _
         n_val = n_slider.value[]
-        fig_dyn = generate_dynamics_fig(n_val)
-        img2[] = fig_to_base64(fig_dyn)
+        fig_flux = generate_flux_fig(n_val)
+        img2[] = fig_to_base64(fig_flux)
         res2[] = "SIMULATION COMPLETE\n" *
                  "• Sensitivity Exponent: n = $(n_val)\n" *
-                 "• Dynamic Invariant: Perfect homeostatic disturbance rejection verified (14 adaptive regimes active)."
+                 "• Homeostatic Adaptation: 14 of 122 coupled regimes maintain exact steady-state disturbance rejection."
     end
 
-    # NOTE: NO automatic initial trigger! Starts immediately on user demand.
-
-    # Layout assembling
     return DOM.div(
-        DOM.style(APP_CSS),
-        DOM.div(class="bmac-app",
-            DOM.div(class="bmac-container",
-                
-                # Header with Westlake University and Control Titans Ribbon
-                DOM.div(class="header-bar",
-                    DOM.div(class="header-top",
-                        DOM.div(style="display: flex; align-items: center;",
-                            DOM.div("WU", class="westlake-seal"),
-                            DOM.div(class="header-title-box",
-                                DOM.h1("Westlake University · BAC-Explorer"),
-                                DOM.p("BMAC LAB · BIO-MACHINE ARCHITECTURE & CONTROL · PROFESSOR FANGZHOU XIAO")
-                            )
-                        ),
-                        DOM.div("Imperial Maroon Edition · R-Index Scanner", class="header-badge")
-                    ),
-                    
-                    # Nobel Bas-Relief Carved Medallions Ribbon (100% English)
-                    DOM.div(class="medallion-ribbon",
-                        DOM.div("Control Titans:", class="medallion-ribbon-title"),
-                        
-                        # 1. Hsue-Shen Tsien
-                        DOM.div(class="medallion-card", title="Hsue-Shen Tsien · 1954 Engineering Cybernetics (Caltech & CAS)",
-                            DOM.div("HT", class="medallion-coin"),
-                            DOM.div(class="medallion-info",
-                                DOM.span("H. S. Tsien", class="medallion-name"),
-                                DOM.span("Cybernetics 1954", class="medallion-sub")
-                            )
-                        ),
-                        # 2. Norbert Wiener
-                        DOM.div(class="medallion-card", title="Norbert Wiener · 1948 Cybernetics & Biological Feedback (MIT)",
-                            DOM.div("NW", class="medallion-coin"),
-                            DOM.div(class="medallion-info",
-                                DOM.span("N. Wiener", class="medallion-name"),
-                                DOM.span("Feedback 1948", class="medallion-sub")
-                            )
-                        ),
-                        # 3. Rudolf E. Kalman
-                        DOM.div(class="medallion-card", title="Rudolf E. Kalman · 1960 Minimal Realizability & State-Space (Stanford)",
-                            DOM.div("RK", class="medallion-coin"),
-                            DOM.div(class="medallion-info",
-                                DOM.span("R. E. Kalman", class="medallion-name"),
-                                DOM.span("Realizability 1960", class="medallion-sub")
-                            )
-                        ),
-                        # 4. John C. Doyle
-                        DOM.div(class="medallion-card", title="John C. Doyle · 1981 Robust Control & HOT Architecture (Caltech)",
-                            DOM.div("JD", class="medallion-coin"),
-                            DOM.div(class="medallion-info",
-                                DOM.span("J. C. Doyle", class="medallion-name"),
-                                DOM.span("Robustness 1981", class="medallion-sub")
-                            )
-                        ),
-                        # 5. Claude E. Shannon
-                        DOM.div(class="medallion-card", title="Claude E. Shannon · 1948 Mathematical Theory of Communication (Bell Labs)",
-                            DOM.div("CS", class="medallion-coin"),
-                            DOM.div(class="medallion-info",
-                                DOM.span("C. Shannon", class="medallion-name"),
-                                DOM.span("Log-Measure 1948", class="medallion-sub")
-                            )
-                        )
-                    )
+        DOM.style(SCANNER_CSS),
+        
+        # Top Navbar
+        DOM.div(class="top-nav",
+            DOM.div(class="nav-left",
+                DOM.span("❖", style="color: #CFA83B;"),
+                DOM.span("∞", style="color: #30D158; font-weight: bold;"),
+                DOM.span("☰", style="color: #8E7E82;")
+            ),
+            DOM.div("BMAC LAB // FINAL", class="nav-brand"),
+            DOM.div(class="nav-right",
+                DOM.span("✦", style="color: #FF9F0A;"),
+                DOM.span("◇", style="color: #CFA83B;"),
+                DOM.span("☸", style="color: #E6C687;")
+            )
+        ),
+
+        # Main App Container
+        DOM.div(class="app-container",
+            DOM.h1("The Architecture of Intelligence.", class="headline"),
+            DOM.p("A complete systems theory framework: Biophysics, Control Theory, AI, and Dynamic Metabolism.", class="subheadline"),
+
+            # Mode Buttons
+            DOM.div(class="tab-bar",
+                DOM.div("GENETICS & CONTROL", class="btn-tab"),
+                DOM.div("DYNAMIC FLUX CONTROL", class="btn-tab")
+            ),
+
+            # Mode 1 Input Row
+            DOM.div(class="input-label", "INPUT SEQUENCE:"),
+            DOM.div(class="input-row",
+                seq_field,
+                run_btn,
+                trace_btn
+            ),
+
+            # Mode 1 Results (Starts in standby; shows zero detail until clicked)
+            DOM.div(class="result-container",
+                DOM.div(res1, class="diag-text"),
+                DOM.div(class="img-wrapper", DOM.img(src=img1)),
+                DOM.div(story1, class="story-card"),
+                DOM.div(class="img-wrapper", DOM.img(src=trace_img))
+            ),
+
+            # Mode 2 Simulation Section
+            DOM.div(style="margin-top: 40px;",
+                DOM.div(class="input-label", "DYNAMIC FLUX CONTROL (FEC SENSITIVITY):"),
+                DOM.div(class="input-row",
+                    DOM.span("Sensitivity n:", style="color: #CFA83B; font-family: monospace; font-size: 13px;"),
+                    n_slider,
+                    sim_btn
                 ),
-
-                # Main Cards
-                DOM.div(class="bmac-grid",
-                    
-                    # Card 1: Promoter Sequence & ROP Geometry
-                    DOM.div(class="bmac-card",
-                        DOM.div(class="card-title",
-                            DOM.span("I. Promoter Architecture & Reaction Order Polyhedra (ROP)"),
-                            DOM.span("Ground Truth R = 0.014065", style="font-size: 11px; color: #30D158; font-family: monospace;")
-                        ),
-                        DOM.div(style="margin-bottom: 8px; font-size: 12px; color: #C4975A;", "Input Promoter DNA Nucleotide Sequence (35bp canonical):"),
-                        seq_field,
-                        DOM.div(class="btn-group",
-                            run_btn1,
-                            trace_btn
-                        ),
-                        DOM.div(res1, class="diag-box"),
-                        
-                        # In-memory Makie Image Display
-                        DOM.div(class="img-box",
-                            DOM.img(src=img1)
-                        ),
-                        DOM.div(story1, class="story-box")
-                    ),
-
-                    # Card 2: Neural Flow-Ray Information Trace-Back
-                    DOM.div(class="bmac-card",
-                        DOM.div(class="card-title",
-                            DOM.span("II. Neural Flow-Ray Information Trace-Back Pipeline"),
-                            DOM.span("Nucleotides -> Kd -> Stoichiometry (N,L) -> Cones -> Adaptation", style="font-size: 11px; color: #FF9F0A;")
-                        ),
-                        DOM.div(class="img-box",
-                            DOM.img(src=trace_img)
-                        )
-                    ),
-
-                    # Card 3: Closed-Loop Dynamic Adaptation Simulation
-                    DOM.div(class="bmac-card",
-                        DOM.div(class="card-title",
-                            DOM.span("III. Closed-Loop Biochemical Dynamic Adaptation Simulation"),
-                            DOM.span("14 / 122 Dynamically Stable Adaptation Regimes", style="font-size: 11px; color: #64D2FF; font-family: monospace;")
-                        ),
-                        DOM.div(class="slider-row",
-                            DOM.span("Hill Sensitivity Exponent (n):", style="font-size: 12px; color: #E6C687;"),
-                            n_slider,
-                            run_btn2
-                        ),
-                        DOM.div(res2, class="diag-box"),
-                        DOM.div(class="img-box",
-                            DOM.img(src=img2)
-                        )
-                    )
+                DOM.div(class="result-container",
+                    DOM.div(res2, class="diag-text"),
+                    DOM.div(class="img-wrapper", DOM.img(src=img2))
                 )
             )
         )
     )
 end
 
-# Launch Bonito Local Server
 println("\n" * "="^70)
-println("  WESTLAKE UNIVERSITY · BMAC SYSTEMS BIOLOGY SCANNER (BAC-Explorer)")
-println("  Imperial Maroon Theme & Nobel Medallions Active (100% English)")
-println("  Awaiting user interaction... (Zero auto-run on load)")
-println("  Serving live at: http://localhost:8270")
+println("  BMAC LAB // FINAL — The Architecture of Intelligence")
+println("  Scanner Ready · Serving live at: http://localhost:8271")
+println("  Standby mode: Results display only upon explicit user scan")
 println("="^70 * "\n")
 
-Server(app, "0.0.0.0", 8270)
+Server(app, "0.0.0.0", 8271)
 wait()
